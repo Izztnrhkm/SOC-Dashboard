@@ -1,32 +1,38 @@
-{% comment %} CyberGuard — Contact {% endcomment %}
+{% comment %} CyberGuard — Contact. Messages are saved to the Dataverse table cg_contactmessage through the Web API (anonymous create permission). {% endcomment %}
 <div class="cg">
   <div class="cg-wrap cg-page">
+    <nav class="cg-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Contact</span></nav>
     <header class="cg-head">
       <span class="cg-eyebrow">Contact</span>
       <h1 class="cg-h1">Reach the security team.</h1>
-      <p class="cg-lead">For anything urgent, call. For everything else, send a message and we will reply by email.</p>
+      <p class="cg-lead" style="margin-top:6px">For anything urgent, call. For everything else, send a message and we will reply by email.</p>
     </header>
 
-    <div class="cg-grid cg-g2" style="align-items:start">
+    <div class="cg-split-2" style="grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)">
       <div>
         <div class="cg-notice alert" style="margin-bottom:20px">
           <span aria-hidden="true">●</span>
-          <div><strong>Active breach (P1/P2)?</strong> Call the hotline now: <strong>+1 (800) 555-2923</strong>. Do not wait for an email reply.</div>
+          <div><strong>Active breach (P1/P2)?</strong> Call the hotline now: <a href="tel:+18005552923"><strong>+1 (800) 555-2923</strong></a>. Do not wait for an email reply.</div>
         </div>
-        <dl class="cg-dl" style="grid-template-columns:130px 1fr;font-size:.95rem">
-          <dt>Hotline</dt><dd>+1 (800) 555-2923<br><span style="color:var(--muted)">Secure line: +1 (202) 555-0199</span></dd>
-          <dt>Email</dt><dd><a href="mailto:soc-dispatch@cyberguard.sec">soc-dispatch@cyberguard.sec</a><br><span style="color:var(--muted)">PGP key ID <span class="cg-mono">0x9E4B21F8A4</span></span></dd>
-          <dt>Americas</dt><dd>Reston, VA</dd>
-          <dt>EMEA</dt><dd>London, UK</dd>
-          <dt>APAC</dt><dd>Singapore</dd>
-          <dt>Vulnerability reports</dt><dd>Reviewed within 2 hours by AppSec and Red Team engineers.</dd>
-        </dl>
+        <div class="cg-card">
+          <dl class="cg-dl" style="margin:0">
+            <dt>Hotline</dt><dd>+1 (800) 555-2923<br><span class="cg-muted">Secure line: +1 (202) 555-0199</span></dd>
+            <dt>Email</dt><dd><a href="mailto:soc-dispatch@cyberguard.sec">soc-dispatch@cyberguard.sec</a><br><span class="cg-muted">PGP key ID <span class="cg-mono">0x9E4B21F8A4</span></span></dd>
+            <dt>Americas</dt><dd>Reston, VA</dd>
+            <dt>EMEA</dt><dd>London, UK</dd>
+            <dt>APAC</dt><dd>Singapore</dd>
+            <dt>Vulnerabilities</dt><dd>Reviewed within 2 hours by AppSec and Red Team engineers.</dd>
+          </dl>
+        </div>
+        <p class="cg-muted" style="font-size:14px;margin-top:14px">Typical reply time: under 4 working hours.</p>
       </div>
 
       <form class="cg-card" id="contactForm" novalidate>
         <h2 class="cg-h2" style="margin-bottom:18px">Send a message</h2>
-        <div class="cg-field"><label for="cName">Name</label><input class="cg-in" id="cName" required autocomplete="name"></div>
-        <div class="cg-field"><label for="cEmail">Work email</label><input class="cg-in" id="cEmail" type="email" required autocomplete="email"></div>
+        <div class="cg-grid cg-g2" style="gap:14px">
+          <div class="cg-field"><label for="cName">Name</label><input class="cg-in" id="cName" autocomplete="name"><div class="err">Please enter your name.</div></div>
+          <div class="cg-field"><label for="cEmail">Work email</label><input class="cg-in" id="cEmail" type="email" autocomplete="email"><div class="err">Please enter a valid email address.</div></div>
+        </div>
         <div class="cg-field">
           <label for="cTopic">Topic</label>
           <select class="cg-sel" id="cTopic">
@@ -34,12 +40,14 @@
             <option>Device quarantined by EDR</option>
             <option>Vulnerability disclosure</option>
             <option>Threat intelligence sharing</option>
+            <option>Report request</option>
+            <option>Dashboard access</option>
             <option>General question</option>
           </select>
         </div>
-        <div class="cg-field"><label for="cMsg">Message <span class="hint">— include hostnames or indicators if you have them</span></label><textarea class="cg-ta" id="cMsg" required></textarea></div>
-        <button class="cg-btn" type="submit" style="width:100%">Send message</button>
-        <div class="cg-ok" id="contactOk" role="status"></div>
+        <div class="cg-field"><label for="cMsg">Message <span class="hint">— include hostnames or indicators if you have them</span></label><textarea class="cg-ta" id="cMsg" maxlength="2000"></textarea><div class="err">Please write a short message.</div><div class="hint" style="text-align:right;font-size:13px;color:var(--muted)"><span id="cCount">0</span> / 2000</div></div>
+        <button class="cg-btn primary" type="submit" id="cGo" style="width:100%">Send message</button>
+        <div class="cg-ok" id="contactOk" role="status" aria-live="polite"></div>
       </form>
     </div>
   </div>

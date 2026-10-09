@@ -1,11 +1,33 @@
-<footer class='cg cg-ft' role='contentinfo'>
+<footer class='cg-ft' role='contentinfo'>
   <div class='cg-ft-in hidden-print'>
-    <div>{% editable snippets 'Footer' type: 'html' %}</div>
-    <nav aria-label='Footer'>
-      <a href='/Dashboard/'>Dashboard</a>
-      <a href='/Incident-Response/'>Incident response</a>
-      <a href='/FAQ/'>FAQ</a>
-      <a href='/Contact-Us/'>Contact</a>
-    </nav>
+    <div class='cg-ft-cols'>
+      <div>
+        <div class='brandline'><span class='cg-brand'><span class='mark'><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/><path d='m9 12 2 2 4-4'/></svg></span></span> CyberGuard</div>
+        <p>Security operations and incident response, in one place. Monitoring around the clock from Reston, London and Singapore.</p>
+      </div>
+      <div>
+        <h4>Operate</h4>
+        <a href='/dashboard/'>Dashboard</a>
+        <a href='/incident-response/#report'>Report an incident</a>
+        <a href='/incident-response/#playbooks'>Playbooks</a>
+        <a href='/reports-&-analytics/'>Reports</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href='/faq/'>FAQ</a>
+        <a href='/contact-us/'>Contact</a>
+        <a href='/about-us/'>About</a>
+        <a href='/profile/'>My access</a>
+      </div>
+      <div>
+        <h4>Emergency hotline</h4>
+        <div class='hot'>+1 (800) 555-2923</div>
+        <p style='margin-top:6px'>Active breach or compromised account? Call now. Available 24/7.</p>
+      </div>
+    </div>
+    <div class='cg-ft-base'>
+      <div>{% editable snippets 'Footer' type: 'html' %}</div>
+      <div>Press <b style='color:#fff'>Ctrl K</b> to search anywhere</div>
+    </div>
   </div>
 </footer>
