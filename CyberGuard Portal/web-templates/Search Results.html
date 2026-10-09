@@ -1,0 +1,38 @@
+{% assign page_size = 10 %}
+{% assign current_page = request.params.page | default: 1 %}
+{% assign q = request.params.q %}
+<div class='cg'>
+  <div class='cg-wrap cg-page' id='mainContent'>
+    <div class='cg-head'>
+      <h1 class='cg-h1'>Search</h1>
+      <form role='search' method='get' action='{{ request.path | escape }}' class='cg-hero-search' style='max-width:640px'>
+        <label class='cg-sr' for='cgSearchPage'>Search the portal</label>
+        <input id='cgSearchPage' name='q' type='search' value='{{ q | escape }}' placeholder='Search incidents, playbooks, FAQs…' autocomplete='off'>
+        <button class='cg-btn' type='submit'>Search</button>
+      </form>
+    </div>
+    {% if q %}
+      {% searchindex query: q, page: request.params.page, page_size: page_size %}
+        {% if searchindex.results.size > 0 %}
+          <p class='cg-lead' style='margin:0'>{{ searchindex.approximate_total_hits }} result{% if searchindex.approximate_total_hits != 1 %}s{% endif %} for “{{ q | escape }}”</p>
+          <ul class='cg-results'>
+            {% for result in searchindex.results %}
+              <li>
+                <h4><a title='{{ result.title | escape }}' href='{{ result.url | escape }}'>{{ result.title | escape }}</a></h4>
+                <p class='fragment'>{{ result.fragment }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+          {% include 'Pagination', current_page: searchindex.page, page_size: page_size, total: searchindex.approximate_total_hits %}
+        {% else %}
+          <div class='cg-card' style='margin-top:24px'>
+            <h3>No results for “{{ q | escape }}”</h3>
+            <p>Try fewer words or a different spelling, or browse the <a href='/FAQ/'>FAQ</a> and <a href='/Incident-Response/'>playbooks</a>.</p>
+          </div>
+        {% endif %}
+      {% endsearchindex %}
+    {% else %}
+      <p class='cg-lead' style='margin:0'>Type a keyword above. Tip: press <span class='cg-mono'>/</span> anywhere to jump to search.</p>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,116 @@
+{% comment %} CyberGuard — Dashboard (incident queue) {% endcomment %}
+<div class="cg">
+  <div class="cg-wrap cg-page">
+
+    <header class="cg-head cg-row" style="align-items:flex-end">
+      <div>
+        <span class="cg-eyebrow">Dashboard</span>
+        <h1 class="cg-h1">Incident queue</h1>
+        <p class="cg-lead" style="margin-top:6px">{% if user %}Signed in as {{ user.fullname | escape }}.{% else %}Everything open right now, most severe first.{% endif %}</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="cg-btn ghost" id="btnCsv" type="button">Export CSV</button>
+        <button class="cg-btn" id="btnNew" type="button">Log incident</button>
+      </div>
+    </header>
+
+    <div class="cg-notice" style="margin-bottom:20px">
+      <span aria-hidden="true">ⓘ</span>
+      <div>Showing sample incidents plus any you log on this device. Connect a Dataverse table to show live records.</div>
+    </div>
+
+    <section class="cg-grid cg-g4" aria-label="Key figures">
+      <div class="cg-stat"><b id="kOpen">–</b><span id="kOpenSub">Open incidents</span></div>
+      <div class="cg-stat"><b>4.2 min</b><span>Mean time to detect</span></div>
+      <div class="cg-stat"><b>16.5 min</b><span>Mean time to contain</span></div>
+      <div class="cg-stat"><b>99.8%</b><span>Sensors healthy</span></div>
+    </section>
+
+    <section class="cg-grid cg-g2" style="margin-top:16px">
+      <div class="cg-card">
+        <h3>Incidents, last 7 days</h3>
+        <div class="cg-bars" id="barDays" role="img" aria-label="Incidents per day for the last seven days"></div>
+      </div>
+      <div class="cg-card">
+        <h3>Open by severity</h3>
+        <div class="cg-split" id="splitSev" style="margin-top:18px" role="img" aria-label="Open incidents by severity"></div>
+        <div class="cg-legend" id="legendSev"></div>
+        <h3 style="margin-top:22px">Open by status</h3>
+        <div class="cg-legend" id="legendStatus" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <section class="cg-section" style="margin-top:36px">
+      <div class="cg-bar">
+        <label class="cg-sr" for="fQ">Search incidents</label>
+        <input class="cg-in" id="fQ" type="search" placeholder="Search by ID, title, host, user or technique" autocomplete="off">
+        <span id="chips" style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="cg-chip" data-sev="all" aria-pressed="true" type="button">All</button>
+          <button class="cg-chip" data-sev="critical" aria-pressed="false" type="button">Critical</button>
+          <button class="cg-chip" data-sev="high" aria-pressed="false" type="button">High</button>
+          <button class="cg-chip" data-sev="medium" aria-pressed="false" type="button">Medium</button>
+          <button class="cg-chip" data-sev="low" aria-pressed="false" type="button">Low</button>
+        </span>
+        <label class="cg-sr" for="fStatus">Status</label>
+        <select class="cg-sel" id="fStatus">
+          <option value="open">Open only</option>
+          <option value="all">All statuses</option>
+          <option value="new">New</option>
+          <option value="investigating">Investigating</option>
+          <option value="contained">Contained</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </div>
+      <div class="cg-tablewrap">
+        <table class="cg-table">
+          <thead><tr><th>Severity</th><th>Incident</th><th>Asset</th><th>Source</th><th>Age</th><th>Status</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="cg-row" style="margin-top:12px;align-items:center">
+        <span id="info" style="color:var(--muted);font-size:.88rem"></span>
+        <span style="display:flex;gap:8px"><button class="cg-btn ghost sm" id="prev" type="button">Previous</button><button class="cg-btn ghost sm" id="next" type="button">Next</button></span>
+      </div>
+    </section>
+  </div>
+
+  <!-- detail drawer -->
+  <div class="cg-drawer-bg" id="dBg"></div>
+  <aside class="cg-drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-hidden="true">
+    <header>
+      <div><div id="dBadges" style="display:flex;gap:8px;margin-bottom:8px"></div><h2 id="dTitle"></h2></div>
+      <button class="cg-x" id="dClose" type="button" aria-label="Close">×</button>
+    </header>
+    <div class="scroll">
+      <p id="dSum" style="color:var(--muted);margin-bottom:20px"></p>
+      <dl class="cg-dl" id="dMeta"></dl>
+      <h3 class="cg-h2" style="font-size:.95rem;margin-bottom:8px">Indicators</h3>
+      <ul id="dIoc" style="margin:0 0 20px;padding-left:18px;font-size:.88rem"></ul>
+      <h3 class="cg-h2" style="font-size:.95rem;margin-bottom:10px">Timeline</h3>
+      <ul class="cg-tl" id="dTl"></ul>
+      <div class="cg-field"><label for="dStatus">Status</label>
+        <select class="cg-sel" id="dStatus"><option value="new">New</option><option value="investigating">Investigating</option><option value="contained">Contained</option><option value="resolved">Resolved</option></select>
+      </div>
+      <div class="cg-field"><label for="dNotes">Analyst notes</label><textarea class="cg-ta" id="dNotes" placeholder="What did you find or do?"></textarea></div>
+      <div class="cg-actions" style="justify-content:space-between">
+        <button class="cg-btn ghost" id="dIso" type="button"></button>
+        <button class="cg-btn" id="dSave" type="button">Save changes</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- new incident -->
+  <dialog class="cg-dialog" id="newDlg">
+    <form method="dialog" id="newForm">
+      <h2>Log an incident</h2>
+      <div class="cg-field"><label for="nTitle">Title</label><input class="cg-in" id="nTitle" required placeholder="e.g. Suspicious login from new country"></div>
+      <div class="cg-grid cg-g2" style="gap:12px">
+        <div class="cg-field"><label for="nSev">Severity</label><select class="cg-sel" id="nSev"><option value="critical">Critical (P1)</option><option value="high">High (P2)</option><option value="medium" selected>Medium (P3)</option><option value="low">Low (P4)</option></select></div>
+        <div class="cg-field"><label for="nSrc">Source</label><select class="cg-sel" id="nSrc"><option>Manual report</option><option>Defender XDR</option><option>Azure Sentinel</option><option>CrowdStrike Falcon</option><option>Palo Alto NGFW</option></select></div>
+      </div>
+      <div class="cg-field"><label for="nHost">Affected host or account</label><input class="cg-in" id="nHost" placeholder="e.g. FIN-DB-SVR01"></div>
+      <div class="cg-field"><label for="nDesc">What happened?</label><textarea class="cg-ta" id="nDesc"></textarea></div>
+      <div class="cg-actions"><button class="cg-btn ghost" value="cancel" type="button" id="nCancel">Cancel</button><button class="cg-btn" type="submit">Log incident</button></div>
+    </form>
+  </dialog>
+</div>

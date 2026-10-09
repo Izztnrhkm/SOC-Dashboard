@@ -1,0 +1,20 @@
+{% comment %} CyberGuard — FAQ {% endcomment %}
+<div class="cg">
+  <div class="cg-wrap cg-page">
+    <header class="cg-head">
+      <span class="cg-eyebrow">FAQ</span>
+      <h1 class="cg-h1">Frequently asked questions</h1>
+      <p class="cg-lead">Procedures and policies, in plain language.</p>
+    </header>
+    <div class="cg-bar"><label class="cg-sr" for="faqFilter">Filter questions</label><input class="cg-in" id="faqFilter" type="search" placeholder="Filter questions…" autocomplete="off" style="max-width:420px"><span id="faqCount" style="color:var(--muted);font-size:.88rem"></span></div>
+    <div class="cg-acc" id="faqList">
+      <details><summary>What qualifies as a Severity 1 (P1 - Critical) incident?</summary><div class="body">A P1 Critical incident is defined as an active, uncontained breach that directly impacts core business operations or enterprise confidentiality. Examples include active ransomware encryption spreading across the network, unauthorized compromise of a Primary Domain Controller (KDC), or mass data exfiltration of customer PII/PCI databases. P1 incidents invoke our 15-minute response SLA and immediate CISO notification.</div></details>
+      <details><summary>Why was my workstation placed under "Network Isolation" by EDR?</summary><div class="body">Network Isolation is an automated or analyst-triggered containment mechanism executed by Microsoft Defender XDR or CrowdStrike Falcon. When an endpoint displays active malicious behavior (such as Cobalt Strike beaconing or Mimikatz credential extraction), the sensor severs all TCP/IP connectivity except for encrypted telemetry to the SOC console. To request investigation and network release, contact the 24/7 CSIRT hotline.</div></details>
+      <details><summary>How do I report a suspected Phishing or Business Email Compromise (BEC)?</summary><div class="body">Do not forward the email directly, as this may strip vital RFC822 internet headers. Use the "Report Message" button in Outlook ribbon or export the original email as an `.eml` or `.msg` attachment and submit it via our <a href="/Contact-Us/" >Secure Dispatch Form</a>. If you clicked a link or entered your credentials, immediately alert the on-call responder.</div></details>
+      <details><summary>What should I do immediately if my device displays a ransomware message?</summary><div class="body"><strong>DO NOT power off or reboot the system</strong>—powering down destroys volatile memory artifacts (RAM) required for decryptor keys and forensic attribution. Immediately disconnect the physical ethernet cable or disable Wi-Fi, keep the computer powered on, and phone the CSIRT Emergency Hotline (+1 800-555-2923) immediately.</div></details>
+      <details><summary>How are forensic indicators (IOCs) validated before firewall blocklist push?</summary><div class="body">All external IP addresses, domains, and SHA-256 file hashes undergo automated enrichment against VirusTotal, AlienVault OTX, and Microsoft Defender Threat Intelligence (MDTI). Indicators scoring an adversary confidence score &gt; 85 are automatically pushed to perimeter Palo Alto firewalls and Cloudflare Edge WAF rules.</div></details>
+      <details><summary>How do internal security analysts request elevated SOC Dashboard access?</summary><div class="body">Access to the live SOC dashboard requires the "SOC Analyst" or "SecOps Administrator" web role in Power Pages / Dataverse, along with hardware-enforced FIDO2 (YubiKey) MFA. Submit an access elevation ticket approved by your department security lead.</div></details>
+    </div>
+    <p id="faqNone" class="cg-empty" hidden>No questions match. Try another word, or <a href="/Contact-Us/">ask us directly</a>.</p>
+  </div>
+</div>

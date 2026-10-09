@@ -1,0 +1,50 @@
+{% comment %} CyberGuard — Reports {% endcomment %}
+<div class="cg">
+  <div class="cg-wrap cg-page">
+    <header class="cg-head">
+      <span class="cg-eyebrow">Reports</span>
+      <h1 class="cg-h1">Compliance and reporting</h1>
+      <p class="cg-lead">Where we stand against each framework, the reports we publish, and recently closed incidents.</p>
+    </header>
+
+    <section>
+      <h2 class="cg-h2" style="margin-bottom:14px">Framework status</h2>
+      <div class="cg-grid cg-g4">
+        <div class="cg-stat"><b>94%</b><span>NIST CSF 2.0</span></div>
+        <div class="cg-stat"><b>98%</b><span>ISO/IEC 27001:2022</span></div>
+        <div class="cg-stat"><b>100%</b><span>SOC 2 Type II</span></div>
+        <div class="cg-stat"><b>92%</b><span>CIS Controls</span></div>
+      </div>
+    </section>
+
+    <section class="cg-section">
+      <h2 class="cg-h2" style="margin-bottom:14px">Published reports</h2>
+      <div class="cg-tablewrap">
+        <table class="cg-table" id="repTable">
+          <thead><tr><th>Report</th><th>Covers</th><th>Cadence</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Weekly SOC summary</strong></td><td>Triage volume, detect and contain times, blocks, top affected assets</td><td>Weekly</td><td><a class="cg-btn ghost sm" href="/Contact-Us/">Request copy</a></td></tr>
+            <tr><td><strong>Board threat briefing</strong></td><td>Risk, threat landscape, emerging ransomware groups</td><td>Quarterly</td><td><a class="cg-btn ghost sm" href="/Contact-Us/">Request copy</a></td></tr>
+            <tr><td><strong>MITRE ATT&amp;CK coverage</strong></td><td>Detection coverage across 14 tactics and rule gaps</td><td>Monthly</td><td><a class="cg-btn ghost sm" href="/Contact-Us/">Request copy</a></td></tr>
+            <tr><td><strong>Forensic audit and RCA log</strong></td><td>Every resolved P1 and P2 with root cause and actions</td><td>Annual</td><td><a class="cg-btn ghost sm" href="/Contact-Us/">Request copy</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="cg-section">
+      <h2 class="cg-h2" style="margin-bottom:14px">Recently closed incidents</h2>
+      <div class="cg-tablewrap">
+        <table class="cg-table">
+          <thead><tr><th>ID</th><th>Incident</th><th>Asset</th><th>Detected by</th><th>Time to contain</th><th>Outcome</th></tr></thead>
+          <tbody>
+            <tr><td class="cg-mono">INC-2026-8712</td><td>Suspicious C2 domain beaconing</td><td>DEV-BUILD-04</td><td>Defender XDR</td><td>12 min</td><td><span class="cg-dot ok"></span> RCA published</td></tr>
+            <tr><td class="cg-mono">INC-2026-8690</td><td>Multi-account password spray</td><td>ENTRA-ID-TENANT</td><td>Azure Sentinel</td><td>19 min</td><td><span class="cg-dot ok"></span> Policy enforced</td></tr>
+            <tr><td class="cg-mono">INC-2026-8645</td><td>Rogue USB storage device</td><td>SEC-OPS-LAPTOP02</td><td>CrowdStrike Falcon</td><td>6 min</td><td><span class="cg-dot ok"></span> Device blocked</td></tr>
+            <tr><td class="cg-mono">INC-2026-8599</td><td>SYN flood on DMZ switch</td><td>DMZ-GW-01</td><td>Palo Alto NGFW</td><td>4 min</td><td><span class="cg-dot ok"></span> Rule optimised</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

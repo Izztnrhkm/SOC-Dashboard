@@ -1,0 +1,46 @@
+{% comment %} CyberGuard — Contact {% endcomment %}
+<div class="cg">
+  <div class="cg-wrap cg-page">
+    <header class="cg-head">
+      <span class="cg-eyebrow">Contact</span>
+      <h1 class="cg-h1">Reach the security team.</h1>
+      <p class="cg-lead">For anything urgent, call. For everything else, send a message and we will reply by email.</p>
+    </header>
+
+    <div class="cg-grid cg-g2" style="align-items:start">
+      <div>
+        <div class="cg-notice alert" style="margin-bottom:20px">
+          <span aria-hidden="true">●</span>
+          <div><strong>Active breach (P1/P2)?</strong> Call the hotline now: <strong>+1 (800) 555-2923</strong>. Do not wait for an email reply.</div>
+        </div>
+        <dl class="cg-dl" style="grid-template-columns:130px 1fr;font-size:.95rem">
+          <dt>Hotline</dt><dd>+1 (800) 555-2923<br><span style="color:var(--muted)">Secure line: +1 (202) 555-0199</span></dd>
+          <dt>Email</dt><dd><a href="mailto:soc-dispatch@cyberguard.sec">soc-dispatch@cyberguard.sec</a><br><span style="color:var(--muted)">PGP key ID <span class="cg-mono">0x9E4B21F8A4</span></span></dd>
+          <dt>Americas</dt><dd>Reston, VA</dd>
+          <dt>EMEA</dt><dd>London, UK</dd>
+          <dt>APAC</dt><dd>Singapore</dd>
+          <dt>Vulnerability reports</dt><dd>Reviewed within 2 hours by AppSec and Red Team engineers.</dd>
+        </dl>
+      </div>
+
+      <form class="cg-card" id="contactForm" novalidate>
+        <h2 class="cg-h2" style="margin-bottom:18px">Send a message</h2>
+        <div class="cg-field"><label for="cName">Name</label><input class="cg-in" id="cName" required autocomplete="name"></div>
+        <div class="cg-field"><label for="cEmail">Work email</label><input class="cg-in" id="cEmail" type="email" required autocomplete="email"></div>
+        <div class="cg-field">
+          <label for="cTopic">Topic</label>
+          <select class="cg-sel" id="cTopic">
+            <option>Suspicious email or phishing</option>
+            <option>Device quarantined by EDR</option>
+            <option>Vulnerability disclosure</option>
+            <option>Threat intelligence sharing</option>
+            <option>General question</option>
+          </select>
+        </div>
+        <div class="cg-field"><label for="cMsg">Message <span class="hint">— include hostnames or indicators if you have them</span></label><textarea class="cg-ta" id="cMsg" required></textarea></div>
+        <button class="cg-btn" type="submit" style="width:100%">Send message</button>
+        <div class="cg-ok" id="contactOk" role="status"></div>
+      </form>
+    </div>
+  </div>
+</div>

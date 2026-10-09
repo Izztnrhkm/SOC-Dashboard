@@ -1,0 +1,16 @@
+{% comment %} CyberGuard — 404 {% endcomment %}
+<div class="cg">
+  <div class="cg-center">
+    <div>
+      <div class="code">404</div>
+      <h1>We can’t find that page</h1>
+      <p>It may have moved or the link may be wrong. Try a search, or head back home.</p>
+      <form class="cg-hero-search" action="{{ sitemarkers['Search'].url | default: '/search/' | escape }}" method="get" role="search" style="margin:0 auto 20px">
+        <label class="cg-sr" for="nfQ">Search</label>
+        <input id="nfQ" name="q" type="search" placeholder="Search the portal…">
+        <button class="cg-btn" type="submit">Search</button>
+      </form>
+      <a class="cg-btn ghost" href="/">Go home</a>
+    </div>
+  </div>
+</div>

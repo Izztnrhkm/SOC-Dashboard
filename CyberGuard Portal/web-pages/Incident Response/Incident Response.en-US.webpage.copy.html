@@ -1,0 +1,80 @@
+{% comment %} CyberGuard — Incident response {% endcomment %}
+<div class="cg">
+  <div class="cg-wrap cg-page">
+
+    <header class="cg-head cg-row" style="align-items:flex-end">
+      <div>
+        <span class="cg-eyebrow">Incident response</span>
+        <h1 class="cg-h1">What to do when something goes wrong.</h1>
+        <p class="cg-lead">Severity levels, the response lifecycle and step-by-step playbooks.</p>
+      </div>
+      <a class="cg-btn danger" href="#report">Report an incident</a>
+    </header>
+
+    <section>
+      <h2 class="cg-h2">Severity levels</h2>
+      <p class="cg-sub" style="margin-top:6px">Pick the highest level that fits. When unsure, go higher.</p>
+      <div class="cg-tablewrap">
+        <table class="cg-table">
+          <thead><tr><th>Level</th><th>Response time</th><th>What it means</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td><span class="cg-badge sev-critical"><span class="cg-dot"></span>P1 Critical</span></td><td><strong>15 min</strong></td><td>Active, uncontained breach hitting core operations or customer data.</td><td>Ransomware encrypting, domain controller compromised, command-and-control on a payment server.</td></tr>
+            <tr><td><span class="cg-badge sev-high"><span class="cg-dot"></span>P2 High</span></td><td><strong>30 min</strong></td><td>Severe risk: privileged account compromise or lateral movement.</td><td>Credential dump, password spray on admin portal, rogue scheduled task.</td></tr>
+            <tr><td><span class="cg-badge sev-medium"><span class="cg-dot"></span>P3 Medium</span></td><td><strong>2 hours</strong></td><td>Moderate risk, usually contained.</td><td>Adware on an endpoint, suspicious PowerShell blocked by AMSI.</td></tr>
+            <tr><td><span class="cg-badge sev-low"><span class="cg-dot"></span>P4 Low</span></td><td><strong>8 hours</strong></td><td>Informational or minor anomaly.</td><td>Port scan on the edge, unpatched non-critical CVE.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="cg-section">
+      <h2 class="cg-h2">Response lifecycle</h2>
+      <p class="cg-sub">Based on NIST SP 800-61.</p>
+      <div class="cg-steps">
+        <div><b>Prepare</b><span>Hardened sensors, baselined telemetry, offline backups.</span></div>
+        <div><b>Detect &amp; triage</b><span>Correlate alerts, map the technique, set severity and scope.</span></div>
+        <div><b>Contain</b><span>Isolate hosts, revoke sessions, block bad IPs at the edge.</span></div>
+        <div><b>Eradicate &amp; recover</b><span>Remove persistence, rebuild systems, restore clean data.</span></div>
+        <div><b>Review</b><span>Publish root cause, close detection gaps, update playbooks.</span></div>
+      </div>
+    </section>
+
+    <section class="cg-section" id="playbooks">
+      <h2 class="cg-h2">Playbooks</h2>
+      <p class="cg-sub">Tick steps off as you go. Your progress is kept on this device.</p>
+      <div class="cg-acc" id="pbList">
+        <details open>
+          <summary><span>Ransomware and lateral movement<br><span style="font-weight:400;color:var(--muted);font-size:.88rem">Pre-execution, shadow copy deletion or active encryption</span></span></summary>
+          <div class="body">
+            <label class="cg-check"><input type="checkbox" data-k="r1"><div><b>1. Isolate the host from the network</b><span>Cut off SMB, WMI and WinRM movement while keeping sensor telemetry flowing.</span><code>Invoke-EDRIsolation -Host FIN-DB-SVR01 -EnforceMode StrictlyIsolated</code></div></label>
+            <label class="cg-check"><input type="checkbox" data-k="r2"><div><b>2. Capture memory, then stop the beacon</b><span>Dump volatile memory of injected processes (rundll32, dllhost, powershell) before terminating them.</span><code>Dump-VolatileMemory -PID 4192 -Destination \\forensics-vault\evidence\</code></div></label>
+            <label class="cg-check"><input type="checkbox" data-k="r3"><div><b>3. Protect backups</b><span>Confirm backup repositories were not touched. Lock the storage bucket read-only.</span></div></label>
+          </div>
+        </details>
+        <details>
+          <summary><span>Business email compromise and identity takeover<br><span style="font-weight:400;color:var(--muted);font-size:.88rem">Hijacked M365 or Entra ID account, rogue forwarding rules</span></span></summary>
+          <div class="body">
+            <label class="cg-check"><input type="checkbox" data-k="b1"><div><b>1. Revoke all sessions and refresh tokens</b><span>Sign the user out everywhere.</span><code>Revoke-AzureADUserAllRefreshToken -ObjectId "user-guid"</code></div></label>
+            <label class="cg-check"><input type="checkbox" data-k="b2"><div><b>2. Find and remove hidden inbox rules</b><span>Attackers often add rules that forward or hide replies.</span><code>Get-InboxRule -Mailbox user@cyberguard.sec | Remove-InboxRule</code></div></label>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="cg-section" id="report">
+      <h2 class="cg-h2">Report an incident</h2>
+      <p class="cg-sub">For P1 or P2, call <strong>+1 (800) 555-2923</strong> first, then fill this in.</p>
+      <form class="cg-card" id="irForm" style="max-width:640px" novalidate>
+        <div class="cg-field"><label for="irTitle">What happened?</label><input class="cg-in" id="irTitle" required placeholder="e.g. Ransom note on finance laptop"></div>
+        <div class="cg-grid cg-g2" style="gap:12px">
+          <div class="cg-field"><label for="irSev">Severity</label><select class="cg-sel" id="irSev"><option value="critical">P1 Critical</option><option value="high">P2 High</option><option value="medium" selected>P3 Medium</option><option value="low">P4 Low</option></select></div>
+          <div class="cg-field"><label for="irHost">Affected host or account</label><input class="cg-in" id="irHost" placeholder="e.g. FIN-LT-042"></div>
+        </div>
+        <div class="cg-field"><label for="irDesc">Details <span class="hint">— what you saw, when, anything you already did</span></label><textarea class="cg-ta" id="irDesc"></textarea></div>
+        <button class="cg-btn" type="submit">Submit report</button>
+        <div class="cg-ok" id="irOk" role="status"></div>
+      </form>
+    </section>
+
+  </div>
+</div>

@@ -1,0 +1,34 @@
+{% comment %} CyberGuard — Profile {% endcomment %}
+<div class="cg">
+  <div class="cg-wrap cg-page" style="max-width:760px">
+    {% if user %}
+      <header class="cg-head" style="display:flex;gap:18px;align-items:center">
+        <div class="cg-avatar" aria-hidden="true">{{ user.fullname | default: 'U' | slice: 0, 1 | escape }}</div>
+        <div>
+          <h1 class="cg-h1" style="font-size:1.8rem">{{ user.fullname | escape }}</h1>
+          <p class="cg-lead" style="margin-top:2px">{{ user.emailaddress1 | escape }}</p>
+        </div>
+      </header>
+      <div class="cg-card">
+        <dl class="cg-dl" style="margin:0">
+          <dt>Name</dt><dd>{{ user.fullname | escape }}</dd>
+          <dt>Email</dt><dd>{{ user.emailaddress1 | escape }}</dd>
+          <dt>Phone</dt><dd>{{ user.telephone1 | default: '—' | escape }}</dd>
+          <dt>Roles</dt><dd>{% if user.roles.size > 0 %}{{ user.roles | join: ', ' | escape }}{% else %}Authenticated user{% endif %}</dd>
+        </dl>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+        <a class="cg-btn" href="/Dashboard/">Open dashboard</a>
+        <a class="cg-btn ghost" href="{% if website.adx_partialurl %}/{{ website.adx_partialurl }}{% endif %}{{ website.sign_out_url_substitution }}">Sign out</a>
+      </div>
+    {% else %}
+      <div class="cg-center">
+        <div>
+          <h1 class="cg-h1">Sign in to see your profile</h1>
+          <p>Your profile and role-based access are available after you sign in.</p>
+          <a class="cg-btn" href="{% if website.adx_partialurl %}/{{ website.adx_partialurl }}{% endif %}{{ website.sign_in_url_substitution }}">Sign in</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>

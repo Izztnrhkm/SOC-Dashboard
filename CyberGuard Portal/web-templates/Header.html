@@ -1,0 +1,120 @@
+{% comment %}
+  CyberGuard — site header. Minimal, accessible, keyboard-friendly.
+  Navigation comes from the "Default" web link set when it exists; otherwise the fallback list below is used.
+{% endcomment %}
+{% assign homeurl = website.adx_partialurl %}
+{% assign search_url = sitemarkers['Search'].url | default: '/search/' %}
+{% assign primary_nav = weblinks['Default'] %}
+<div class='cg cg-hd' id='cgHeader' role='banner'>
+  <div class='skip-to-content'>
+    <a href='#mainContent'>{{ resx.Skip_To_Content | default: 'Skip to main content' }}</a>
+  </div>
+  <div class='cg-hd-in'>
+    <a class='cg-brand' href='/' aria-label='{{ snippets["Site name"] | default: "CyberGuard" | escape }} home'>
+      <svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/><path d='m9 12 2 2 4-4'/></svg>
+      CyberGuard
+    </a>
+    <button class='cg-burger' id='cgBurger' type='button' aria-expanded='false' aria-controls='cgMenu' aria-label='{{ snippets["Header/Toggle Navigation"] | default: "Toggle navigation" | escape }}'>
+      <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><path d='M4 7h16M4 12h16M4 17h16'/></svg>
+    </button>
+    <div class='cg-menu' id='cgMenu'>
+      <nav class='cg-nav' aria-label='{{ resx.Main_Navigation | default: "Main navigation" }}'>
+        {% if primary_nav and primary_nav.weblinks.size > 0 %}
+          {% for link in primary_nav.weblinks %}
+            {% if link.display_page_child_links and link.url != null %}
+              {% assign sublinks = sitemap[link.url].children %}
+            {% else %}
+              {% assign sublinks = link.weblinks %}
+            {% endif %}
+            {% if sublinks.size > 0 %}
+              <div class='cg-dd'>
+                <a href='{{ link.url | escape }}'>{{ link.name | escape }}</a>
+                <div class='cg-dd-menu'>
+                  {% for sub in sublinks %}<a href='{{ sub.url | escape }}'>{{ sub.name | default: sub.title | escape }}</a>{% endfor %}
+                </div>
+              </div>
+            {% else %}
+              <a href='{{ link.url | escape }}'{% if link.Open_In_New_Window %} target='_blank' rel='noopener'{% endif %}>{{ link.name | escape }}</a>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <a href='/Dashboard/'>Dashboard</a>
+          <a href='/Incident-Response/'>Incident response</a>
+          <a href='/Reports--Analytics/'>Reports</a>
+          <a href='/FAQ/'>FAQ</a>
+          <a href='/About-Us/'>About</a>
+          <a href='/Contact-Us/'>Contact</a>
+        {% endif %}
+      </nav>
+      <div class='cg-hd-right'>
+        {% assign search_enabled = settings['Search/Enabled'] | boolean | default: true %}
+        {% if search_enabled %}
+          <form class='cg-search' role='search' action='{{ search_url | escape }}' method='get'>
+            <label class='cg-sr' for='cgQ'>Search</label>
+            <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>
+            <input id='cgQ' name='q' type='search' placeholder='Search' autocomplete='off' value='{{ request.params.q | escape }}'>
+            <kbd aria-hidden='true'>/</kbd>
+          </form>
+        {% endif %}
+        {% assign profile_enabled = settings['Profile/Enabled'] | boolean | default: true %}
+        {% if profile_enabled %}
+          {% if user %}
+            <div class='cg-acct'>
+              <a href='{{ sitemarkers["Profile"].url | default: "/Profile/" | escape }}' aria-haspopup='true'>{{ user.fullname | default: resx.Default_Profile_name | escape }}</a>
+              <div class='cg-dd-menu'>
+                <a href='{{ sitemarkers["Profile"].url | default: "/Profile/" | escape }}'>Profile</a>
+                <a href='{% if homeurl %}/{{ homeurl }}{% endif %}{{ website.sign_out_url_substitution }}'>{{ snippets['links/logout'] | default: resx.Sign_Out | default: 'Sign out' | escape }}</a>
+              </div>
+            </div>
+          {% else %}
+            <a class='cg-btn sm' href='{% if homeurl %}/{{ homeurl }}{% endif %}{{ website.sign_in_url_substitution }}'>{{ snippets['links/login'] | default: resx.Sign_In | default: 'Sign in' | escape }}</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<div class='cg-toast' id='cgToast' role='status' aria-live='polite'></div>
+<script>
+(function () {
+  'use strict';
+  var hd = document.getElementById('cgHeader');
+  var burger = document.getElementById('cgBurger');
+  if (burger) burger.addEventListener('click', function () {
+    var open = hd.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  // highlight current page
+  var here = location.pathname.replace(/\/+$/, '').toLowerCase();
+  document.querySelectorAll('.cg-nav a').forEach(function (a) {
+    var p = a.pathname.replace(/\/+$/, '').toLowerCase();
+    if (p && p === here) a.setAttribute('aria-current', 'page');
+  });
+  // press "/" to search
+  document.addEventListener('keydown', function (e) {
+    var t = (e.target.tagName || '').toLowerCase();
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey && t !== 'input' && t !== 'textarea' && t !== 'select') {
+      var q = document.getElementById('cgQ');
+      if (q) { e.preventDefault(); q.focus(); }
+    }
+  });
+  // shared helpers for pages
+  window.CG = window.CG || {};
+  CG.toast = function (msg) {
+    var el = document.getElementById('cgToast');
+    if (!el) return;
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(CG._t); CG._t = setTimeout(function () { el.classList.remove('show'); }, 2800);
+  };
+  CG.esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  // Browser-local store for incidents logged on this device (demo mode, until wired to Dataverse).
+  CG.userIncidents = function () { try { return JSON.parse(localStorage.getItem('cg_user_incidents') || '[]'); } catch (e) { return []; } };
+  CG.addIncident = function (inc) {
+    var list = CG.userIncidents();
+    inc.id = 'INC-' + new Date().getFullYear() + '-' + (9000 + list.length + 1);
+    inc.created = Date.now(); list.unshift(inc);
+    try { localStorage.setItem('cg_user_incidents', JSON.stringify(list)); } catch (e) {}
+    return inc;
+  };
+})();
+</script>
