@@ -1,46 +1,36 @@
-{% comment %} CyberGuard — Profile. Uses the Liquid `user` object; roles come from the user's web roles. {% endcomment %}
-<div class="cg">
-  <div class="cg-wrap cg-page" style="max-width:860px">
-    <nav class="cg-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Profile</span></nav>
+{% comment %} Landasan Digital SOC Portal - Profile and access. Uses the Liquid user object; the dashboard check is done live by the page script. Power Pages adds the profile form below this text. {% endcomment %}
+<div class="ld">
+  <div class="ld-page" style="padding-bottom:40px">
     {% if user %}
-      <header class="cg-head" style="display:flex;gap:18px;align-items:center">
-        <div class="cg-avatar" aria-hidden="true">{{ user.fullname | default: user.emailaddress1 | default: 'U' | slice: 0, 1 | upcase | escape }}</div>
+      <div class="ld-me">
+        <div class="ld-avatar" aria-hidden="true">{{ user.fullname | default: user.emailaddress1 | default: 'U' | slice: 0, 1 | upcase | escape }}</div>
         <div>
-          <h1 class="cg-h1" style="font-size:30px">{{ user.fullname | default: user.emailaddress1 | escape }}</h1>
-          <p class="cg-lead" style="margin-top:2px">{{ user.emailaddress1 | escape }}</p>
-        </div>
-      </header>
-      <div class="cg-grid cg-g2">
-        <div class="cg-card">
-          <h2 class="cg-h3" style="margin-bottom:14px">Account</h2>
-          <dl class="cg-dl" style="margin:0">
-            <dt>Name</dt><dd>{{ user.fullname | default: '—' | escape }}</dd>
-            <dt>Email</dt><dd>{{ user.emailaddress1 | default: '—' | escape }}</dd>
-            <dt>Phone</dt><dd>{{ user.telephone1 | default: '—' | escape }}</dd>
-            <dt>Roles</dt><dd>{% if user.roles.size > 0 %}{% for r in user.roles %}<span class="cg-badge" style="margin:0 6px 6px 0">{{ r | escape }}</span>{% endfor %}{% else %}<span class="cg-badge">Authenticated user</span>{% endif %}</dd>
-          </dl>
-        </div>
-        <div class="cg-card">
-          <h2 class="cg-h3" style="margin-bottom:14px">What you can do</h2>
-          <ul class="cg-list" style="list-style:none;margin:0;padding:0;line-height:2.1">
-            <li><span class="cg-dot ok"></span> Read FAQ and guidance</li>
-            <li><span class="cg-dot ok"></span> Report an incident</li>
-            <li id="canDash"><span class="cg-dot"></span> View and update the incident dashboard <span class="cg-muted" id="canDashNote">(checking…)</span></li>
-          </ul>
+          <h1>{{ user.fullname | default: user.emailaddress1 | escape }}</h1>
+          <p>{{ user.emailaddress1 | escape }}</p>
         </div>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
-        <a class="cg-btn primary" href="/dashboard/">Open dashboard</a>
-        <a class="cg-btn ghost" href="/contact-us/?topic=Dashboard%20access">Request dashboard access</a>
-        <a class="cg-btn ghost" href="{% if website.adx_partialurl %}/{{ website.adx_partialurl }}{% endif %}{{ website.sign_out_url_substitution }}">Sign out</a>
+
+      <h2 class="ld-h2" style="margin-bottom:12px">Your access</h2>
+      <ul class="ld-can">
+        <li><span class="mk yes" aria-hidden="true">✓</span><div>Read help, playbooks and reports<small>Everyone who signs in.</small></div></li>
+        <li><span class="mk yes" aria-hidden="true">✓</span><div>Report incidents<small>Everyone who signs in.</small></div></li>
+        <li id="canDash"><span class="mk wait" aria-hidden="true">…</span><div>See and update the incident list<small id="canDashNote">Checking…</small></div></li>
+      </ul>
+
+      <h2 class="ld-h2" style="margin:32px 0 12px">Roles</h2>
+      <div class="ld-roles">{% if user.roles.size > 0 %}{% for r in user.roles %}<span class="ld-role">{{ r | escape }}</span>{% endfor %}{% else %}<span class="ld-role">Authenticated Users</span>{% endif %}</div>
+
+      <div class="ld-actions" style="margin-top:32px">
+        <a class="ld-btn primary" href="/dashboard/">Open the dashboard</a>
+        <a class="ld-btn" href="/contact-us/?topic=Dashboard%20access" id="askAccess">Ask for access</a>
+        <a class="ld-btn quiet" href="{% if website.adx_partialurl %}/{{ website.adx_partialurl }}{% endif %}{{ website.sign_out_url_substitution }}">Sign out</a>
       </div>
+      <hr class="ld-rule" style="margin-bottom:0">
     {% else %}
-      <div class="cg-center">
-        <div>
-          <h1 class="cg-h1">Sign in to see your profile</h1>
-          <p>Your profile and role-based access are available after you sign in.</p>
-          <a class="cg-btn primary" href="{% if website.adx_partialurl %}/{{ website.adx_partialurl }}{% endif %}{{ website.sign_in_url_substitution }}">Sign in</a>
-        </div>
+      <div class="ld-oops" style="padding:24px 0">
+        <h1>Sign in to see your profile</h1>
+        <p>Your details and roles appear here after you sign in.</p>
+        <div class="ld-actions"><a class="ld-btn primary" href="{% if website.adx_partialurl %}/{{ website.adx_partialurl }}{% endif %}{{ website.sign_in_url_substitution }}">Sign in</a></div>
       </div>
     {% endif %}
   </div>

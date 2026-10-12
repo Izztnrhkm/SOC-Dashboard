@@ -1,44 +1,40 @@
-# CyberGuard Portal v2 — set-up guide
+# Landasan Digital SOC Portal: setup (v4)
 
-Everything runs from Windows PowerShell. Replace paths with yours.
+All commands run in Windows PowerShell on your computer.
 
-## 1. Put the new design on the site
+## 1. Upload the site
 ```powershell
-# 1. Download this repo (Code > Download ZIP) and unzip, or `git pull`.
-# 2. Copy the files into your downloaded site folder (the one with web-pages, web-templates ...)
-cd "<repo>\CyberGuard Portal\setup"
-.\apply-to-site.ps1 -Site "C:\Users\izzat\Documents\cyberguard-site\<site-folder>"
-# 3. Upload
-cd "C:\Users\izzat\Documents\cyberguard-site"
-pac pages upload --path "<site-folder>" --modelVersion 2
+cd C:\Users\izzat\Documents\cyberguard-site
+pac pages upload --path "cyberguard-portal" --modelVersion 2
 ```
-Then open Power Pages > Site actions > **Sync configuration** (or wait a minute) and hard-refresh (Ctrl+Shift+R).
-Without step 2 below the site still works: it shows clearly labelled **sample data**.
+Do not add `--forceUploadAll`: the downloaded `sitesetting.yml` still has `Search/Enabled = False` and would switch search off.
 
-## 2. Turn on live data (Dataverse)
+## 2. Create the new tables and fix the role links
 ```powershell
-cd "<repo>\CyberGuard Portal\setup"
-# creates solution CyberGuardPortal, tables cg_incident / cg_contactmessage / cg_article, sample rows
-.\setup-dataverse.ps1 -EnvUrl https://org5a61f085.crm5.dynamics.com
-# creates Web API site settings, the "SOC Analyst" web role and table permissions; gives you the role
-.\configure-portal.ps1 -EnvUrl https://org5a61f085.crm5.dynamics.com -WebsiteId 36e7a73f-f9fd-4219-ad99-31ae7dfb6aab -AssignTo your.email@company.com
+& "C:\Users\izzat\Downloads\PowerPages\SOC-Dashboard-main\SOC-Dashboard-main\CyberGuard Portal\setup\setup-portal-v4.ps1" -EnvUrl https://org5a61f085.crm5.dynamics.com -WebsiteId 36e7a73f-f9fd-4219-ad99-31ae7dfb6aab
 ```
-Both ask you to sign in with a device code (open the link, type the code). Both are safe to re-run.
-`-AssignTo` needs the person to have signed in to the portal once (so their contact exists).
+It signs you in with a device code, then prints PASS or FAIL for each step. Safe to run again.
 
-If `configure-portal.ps1` cannot do a step it says so; do it by hand in the **Portal Management** app:
-* Site Settings: `Webapi/<table>/enabled = true` and `Webapi/<table>/fields = <columns>` for `cg_incident`, `cg_contactmessage`, `cg_article`; plus `Webapi/error/innererror = true`.
-* Web Roles: create **SOC Analyst**, assign it to your contact.
-* Table Permissions (scope Global): SOC Analyst → cg_incident read/write/create; Authenticated Users → cg_incident create; Anonymous + Authenticated → cg_article read, cg_contactmessage create.
+## 3. Check and refresh
+- Power Pages > Security > Table permissions: every row must show a role in the Roles column. If a row shows "--", the script prints which roles to add by hand.
+- Click Sync, then hard refresh the portal (Ctrl+F5).
 
-## 3. Check it works
-* Dashboard badge says **Live data · Dataverse** (green). "Sample data" = Dataverse not connected; the yellow notice under the title says why (not signed in, no role, missing site setting).
-* Report an incident on *Incident response* → it appears on the Dashboard with an `INC-yyyy-nnnn` reference.
-* Contact form → a row appears in the `cg_contactmessage` table.
-* FAQ: add a row to `cg_article` and it shows up under the static questions.
+## Pages
+| Page | Address | Data |
+|---|---|---|
+| Home | / | incidents, last handover |
+| Dashboard | /dashboard/ | cg_incident |
+| Handover | /handover/ | cg_handover |
+| Watchlist | /watchlist/ | cg_indicator |
+| Playbooks | /playbooks/ | none (ticks saved in the browser) |
+| Reports | /reports/ | cg_incident |
+| Help | /faq/ | cg_article (optional extra answers) |
+| Incident response | /incident-response/ | creates cg_incident |
+| Escalation | /escalation/ | none |
+| Contact | /contact-us/ | creates cg_contactmessage |
+| About, Profile | /about-us/, /profile/ | none |
 
-## Other Power Pages features worth turning on
-* **Search** (Set up > Site settings > Enable site search) — the header search and Ctrl K palette link to it.
-* **Page access**: set Dashboard to *Restricted* to the SOC Analyst role (Pages workspace > page > Permissions).
-* **Power Automate**: trigger a flow on new `cg_incident` rows (Teams/e-mail alert for critical).
-* **Copilot** (Set up > Copilot) for an in-site assistant, and **Analytics** to see traffic.
+## Editing
+- Text on each page: Power Pages > Pages > the page > Edit code, or the files in `web-pages/`.
+- Design: `web-files/theme.css` (source with comments in `design/theme.src.css`).
+- Menu: the links are in the Header web template.

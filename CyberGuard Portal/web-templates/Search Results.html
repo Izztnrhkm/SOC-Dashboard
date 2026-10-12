@@ -1,45 +1,45 @@
 {% assign page_size = 10 %}
-{% assign current_page = request.params.page | default: 1 %}
 {% assign q = request.params.q %}
-<div class='cg'>
-  <div class='cg-wrap cg-page' id='mainContent'>
-    <nav class='cg-crumbs' aria-label='Breadcrumb'><a href='/'>Home</a><span class='sep'>/</span><span>Search</span></nav>
-    <div class='cg-head'>
-      <h1 class='cg-h1'>Search</h1>
-      <form role='search' method='get' action='{{ request.path | escape }}' style='margin-top:18px;max-width:680px;display:flex;gap:10px'>
-        <label class='cg-sr' for='cgSearchPage'>Search the portal</label>
-        <div class='cg-search-inline' style='flex:1'>
-          <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>
-          <input class='cg-in' id='cgSearchPage' name='q' type='search' value='{{ q | escape }}' placeholder='Search playbooks, FAQs, pages…' autocomplete='off'>
-        </div>
-        <button class='cg-btn primary' type='submit'>Search</button>
-      </form>
-    </div>
+<div class='ld'>
+  <div class='ld-wrap ld-page ld-narrow'>
+    <header class='ld-pagehead' style='margin-bottom:0'>
+      <div><h1>Search</h1></div>
+    </header>
+    <form class='ld-searchform' role='search' method='get' action='{{ request.path | escape }}'>
+      <div class='ld-search'>
+        <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>
+        <label class='ld-sr' for='ldSearchPage'>Search the portal</label>
+        <input class='ld-input' id='ldSearchPage' name='q' type='search' value='{{ q | escape }}' placeholder='Search playbooks, answers and pages' autocomplete='off'>
+      </div>
+      <button class='ld-btn primary' type='submit'>Search</button>
+    </form>
     {% if q %}
       {% searchindex query: q, page: request.params.page, page_size: page_size %}
         {% if searchindex.results.size > 0 %}
-          <p class='cg-sub' style='margin:0'><b>{{ searchindex.approximate_total_hits }}</b> result{% if searchindex.approximate_total_hits != 1 %}s{% endif %} for “{{ q | escape }}”</p>
-          <ul class='cg-results'>
+          <p class='ld-count'>{{ searchindex.approximate_total_hits }} result{% if searchindex.approximate_total_hits != 1 %}s{% endif %} for “{{ q | escape }}”</p>
+          <ul class='ld-results'>
             {% for result in searchindex.results %}
               <li>
-                <h4><a title='{{ result.title | escape }}' href='{{ result.url | escape }}'>{{ result.title | escape }}</a></h4>
-                <p class='fragment'>{{ result.fragment }}</p>
+                <a class='hit' href='{{ result.url | escape }}'>
+                  <span class='path'>{{ result.url | escape }}</span>
+                  <h2>{{ result.title | escape }}</h2>
+                  <p>{{ result.fragment }}</p>
+                </a>
               </li>
             {% endfor %}
           </ul>
           {% include 'Pagination', current_page: searchindex.page, page_size: page_size, total: searchindex.approximate_total_hits %}
         {% else %}
-          <div class='cg-card' style='margin-top:24px'>
-            <h3>No results for “{{ q | escape }}”</h3>
-            <p>Try fewer words or another spelling, or browse the <a href='/faq/'>FAQ</a> and the <a href='/incident-response/'>incident response playbooks</a>.</p>
+          <div class='ld-empty' style='margin-top:16px'>
+            <b>Nothing found for “{{ q | escape }}”</b>
+            Try fewer or different words, or look in <a href='/faq/'>Help</a> and the <a href='/playbooks/'>playbooks</a>.
           </div>
         {% endif %}
       {% endsearchindex %}
     {% else %}
-      <div class='cg-grid cg-g3' style='margin-top:12px'>
-        <a class='cg-card' href='/faq/'><h3>FAQ</h3><p>Answers on severity, isolation, phishing and ransomware.</p></a>
-        <a class='cg-card' href='/incident-response/#playbooks'><h3>Playbooks</h3><p>Step-by-step response checklists.</p></a>
-        <a class='cg-card' href='/dashboard/'><h3>Dashboard</h3><p>Every open incident, filterable.</p></a>
+      <p class='ld-muted' style='margin-top:28px'>Search covers pages, playbooks and help answers. Common searches:</p>
+      <div class='ld-chips'>
+        <a href='?q=ransomware'>ransomware</a><a href='?q=phishing'>phishing</a><a href='?q=escalation'>escalation</a><a href='?q=PDPA'>PDPA</a><a href='?q=access'>access</a>
       </div>
     {% endif %}
   </div>

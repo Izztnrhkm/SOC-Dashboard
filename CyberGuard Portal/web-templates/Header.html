@@ -1,165 +1,175 @@
 {% comment %}
-  CyberGuard — site header v2: status bar, navigation, search palette (Ctrl+K), account menu,
-  and the shared client library (window.CG) used by every page: Web API wrapper with demo fallback.
+  Landasan Digital SOC Portal - site header (v4).
+  Holds the navigation, account menu, search panel and the shared script (window.CG) that every page uses:
+  Power Pages Web API wrapper, incident data (Dataverse table cg_incident) with a sample-data fallback, helpers.
+  Navigation is fixed here on purpose so the order and labels stay task-based. Edit the links below to change it.
 {% endcomment %}
 {% assign homeurl = website.adx_partialurl %}
 {% assign search_url = sitemarkers['Search'].url | default: '/search/' %}
-{% assign primary_nav = weblinks['Default'] %}
-<div class='cg-bar-top' id='cgTop'>
-  <div class='in'>
-    <span id='cgStatus'><span class='cg-pulse'></span><b>Checking systems…</b></span>
-    <span class='hide-sm'>24/7 hotline <b>+1 (800) 555-2923</b> &nbsp;·&nbsp; <a href='/incident-response/#report'>Report an incident →</a></span>
-  </div>
-</div>
-<div class='cg-hd' id='cgHeader' role='banner'>
-  <div class='skip-to-content'><a href='#mainContent'>{{ resx.Skip_To_Content | default: 'Skip to main content' }}</a></div>
-  <div class='cg-hd-in'>
-    <a class='cg-brand' href='/' aria-label='CyberGuard home'>
-      <span class='mark'><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/><path d='m9 12 2 2 4-4'/></svg></span>
-      CyberGuard
-    </a>
-    <button class='cg-burger' id='cgBurger' type='button' aria-expanded='false' aria-controls='cgMenu' aria-label='Toggle navigation'>
-      <svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><path d='M4 7h16M4 12h16M4 17h16'/></svg>
-    </button>
-    <div class='cg-menu' id='cgMenu'>
-      <nav class='cg-nav' aria-label='Main navigation'>
-        {% if primary_nav and primary_nav.weblinks.size > 0 %}
-          {% for link in primary_nav.weblinks %}
-            {% if link.display_page_child_links and link.url != null %}{% assign sublinks = sitemap[link.url].children %}{% else %}{% assign sublinks = link.weblinks %}{% endif %}
-            {% if sublinks.size > 0 %}
-              <div class='cg-dd'><a href='{{ link.url | escape }}'>{{ link.name | escape }} ▾</a>
-                <div class='cg-dd-menu'>{% for sub in sublinks %}<a href='{{ sub.url | escape }}'>{{ sub.name | default: sub.title | escape }}</a>{% endfor %}</div>
-              </div>
-            {% else %}
-              <a href='{{ link.url | escape }}'{% if link.Open_In_New_Window %} target='_blank' rel='noopener'{% endif %}>{{ link.name | escape }}</a>
-            {% endif %}
-          {% endfor %}
-        {% else %}
-          <a href='/'>Home</a><a href='/dashboard/'>Dashboard</a><a href='/incident-response/'>Incident response</a><a href='/reports-&-analytics/'>Reports</a><a href='/faq/'>FAQ</a><a href='/about-us/'>About</a><a href='/contact-us/'>Contact</a>
-        {% endif %}
-      </nav>
-      <div class='cg-hd-right'>
-        <button class='cg-searchbtn' id='cgOpenPal' type='button' aria-label='Search the portal'>
-          <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>
-          Search…<kbd>Ctrl K</kbd>
-        </button>
-        {% if user %}
-          <div class='cg-acct' id='cgAcct'>
-            <button type='button' aria-haspopup='true' aria-expanded='false' id='cgAcctBtn'><span class='av'>{{ user.fullname | default: 'U' | slice: 0, 1 | escape }}</span>{{ user.fullname | default: 'Account' | escape }} ▾</button>
-            <div class='cg-dd-menu'>
-              <div class='who'><b>{{ user.fullname | escape }}</b>{{ user.emailaddress1 | escape }}</div>
-              <a href='/profile/'>My profile &amp; access</a>
-              <a href='/dashboard/'>Dashboard</a>
-              <a href='{% if homeurl %}/{{ homeurl }}{% endif %}{{ website.sign_out_url_substitution }}'>Sign out</a>
-            </div>
+<a class='ld-skip' href='#mainContent'>Skip to main content</a>
+<header class='ld-hd' id='ldHd'>
+  <div class='ld-hd-in'>
+    <a class='ld-logo' href='/' aria-label='Landasan Digital SOC Portal, home'><img src='/ldsb-icon.png' alt='' width='49' height='26'><b>Landasan Digital</b><span>SOC Portal</span></a>
+    <nav class='ld-nav' id='ldNav' aria-label='Main'>
+      <a href='/dashboard/'>Dashboard</a>
+      <a href='/handover/'>Handover</a>
+      <a href='/watchlist/'>Watchlist</a>
+      <a href='/playbooks/'>Playbooks</a>
+      <a href='/reports/'>Reports</a>
+      <a href='/faq/' data-also='/incident-response /escalation /contact-us /about-us'>Help</a>
+      <a class='ld-nav-report' href='/incident-response/#report'>Report incident</a>
+    </nav>
+    <div class='ld-hd-act'>
+      <button class='ld-icon' id='ldSearchBtn' type='button' aria-label='Search the portal' title='Search (Ctrl K)'>
+        <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>
+      </button>
+      <a class='ld-btn primary sm' href='/incident-response/#report'>Report incident</a>
+      {% if user %}
+        <div class='ld-acct' id='ldAcct'>
+          <button type='button' id='ldAcctBtn' aria-haspopup='true' aria-expanded='false' aria-controls='ldAcctMenu' aria-label='Account: {{ user.fullname | escape }}'>{{ user.fullname | default: user.emailaddress1 | default: 'U' | slice: 0, 1 | upcase | escape }}</button>
+          <div class='ld-menu' id='ldAcctMenu'>
+            <div class='who'><b>{{ user.fullname | escape }}</b>{{ user.emailaddress1 | escape }}</div>
+            <a href='/profile/'>Profile and access</a>
+            <a href='/contact-us/'>Contact the SOC</a>
+            <a href='/about-us/'>About this portal</a>
+            <a href='{% if homeurl %}/{{ homeurl }}{% endif %}{{ website.sign_out_url_substitution }}'>Sign out</a>
           </div>
-        {% else %}
-          <a class='cg-btn primary sm' style='color:#fff' href='{% if homeurl %}/{{ homeurl }}{% endif %}{{ website.sign_in_url_substitution }}'>Sign in</a>
-        {% endif %}
-      </div>
+        </div>
+      {% else %}
+        <a class='ld-btn sm' href='{% if homeurl %}/{{ homeurl }}{% endif %}{{ website.sign_in_url_substitution }}'>Sign in</a>
+      {% endif %}
+      <button class='ld-icon ld-burger' id='ldBurger' type='button' aria-expanded='false' aria-controls='ldNav' aria-label='Menu'>
+        <svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><path d='M4 7h16M4 12h16M4 17h16'/></svg>
+      </button>
     </div>
   </div>
-</div>
+</header>
 
-<div class='cg-pal' id='cgPal' role='dialog' aria-modal='true' aria-label='Search the portal'>
+<div class='ld-pal' id='ldPal' role='dialog' aria-modal='true' aria-label='Search the portal'>
   <div class='box'>
     <div class='inp'>
-      <svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>
-      <input id='cgPalIn' type='text' placeholder='Search pages, playbooks, incidents…' autocomplete='off' aria-label='Search'>
+      <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>
+      <input id='ldPalIn' type='text' role='combobox' aria-expanded='true' aria-autocomplete='list' placeholder='Search pages and playbooks' autocomplete='off' aria-label='Search' aria-controls='ldPalList'>
+      <button type='button' class='esc' id='ldPalClose'>Esc<span class='ld-sr'> to close search</span></button>
     </div>
-    <ul id='cgPalList' role='listbox'></ul>
-    <div class='foot'><span>↑ ↓ to move</span><span>Enter to open</span><span>Esc to close</span></div>
+    <ul id='ldPalList' role='listbox' aria-label='Results'></ul>
+    <div class='keys' aria-hidden='true'><span><kbd>&uarr;</kbd><kbd>&darr;</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Ctrl</kbd><kbd>K</kbd> open search anywhere</span></div>
   </div>
 </div>
-<div class='cg-toast' id='cgToast' role='status' aria-live='polite'></div>
+<div class='ld-toast' id='ldToast' role='status' aria-live='polite'></div>
 
-<script>
-  window.CG_USER = {
-    "name": "{% if user %}{{ user.fullname | escape }}{% endif %}",
-    "email": "{% if user %}{{ user.emailaddress1 | escape }}{% endif %}",
-    "signedIn": {% if user %}true{% else %}false{% endif %},
-    "roles": [{% if user %}{% for r in user.roles %}"{{ r | escape }}"{% unless forloop.last %},{% endunless %}{% endfor %}{% endif %}]
-  };
-  window.CG_SEARCH_URL = "{{ search_url | escape }}";
-</script>
+<div id='ldUser' hidden data-signed-in='{% if user %}1{% endif %}' data-name='{% if user %}{{ user.fullname | escape }}{% endif %}' data-email='{% if user %}{{ user.emailaddress1 | escape }}{% endif %}' data-roles='{% if user %}{% for r in user.roles %}{{ r | escape }}{% unless forloop.last %}|{% endunless %}{% endfor %}{% endif %}' data-search='{{ search_url | escape }}'></div>
 {% raw %}
 <script>
 (function () {
   'use strict';
   var CG = window.CG = window.CG || {};
-  var U = CG.user = window.CG_USER || { name: '', roles: [], signedIn: false };
-  CG.searchUrl = window.CG_SEARCH_URL || '/search/';
-  CG.isAnalyst = function () { return U.roles.some(function (r) { return /soc analyst|administrator/i.test(r); }); };
+  /* user details come from data- attributes, so names like O'Neil arrive decoded */
+  var ud = document.getElementById('ldUser'), dd = (ud && ud.dataset) || {};
+  var U = CG.user = { name: dd.name || '', email: dd.email || '', roles: (dd.roles || '').split('|').filter(Boolean), signedIn: !!dd.signedIn };
+  window.CG_USER = U;
+  CG.searchUrl = dd.search || '/search/';
+  CG.hotline = '+60 3-5524 3133';
 
-  /* ---------- tiny helpers ---------- */
+  /* ---------- helpers ---------- */
   CG.esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   CG.toast = function (msg) {
-    var el = document.getElementById('cgToast'); if (!el) return;
-    el.textContent = msg; el.classList.add('show'); clearTimeout(CG._t); CG._t = setTimeout(function () { el.classList.remove('show'); }, 3200);
+    var el = document.getElementById('ldToast'); if (!el) return;
+    el.textContent = msg; el.classList.add('is-open'); clearTimeout(CG._t); CG._t = setTimeout(function () { el.classList.remove('is-open'); }, 3200);
   };
   CG.ago = function (ts) {
     var m = Math.max(1, Math.round((Date.now() - ts) / 60000));
     if (m < 60) return m + ' min ago'; var h = Math.round(m / 60);
-    if (h < 48) return h + ' h ago'; return Math.round(h / 24) + ' d ago';
+    if (h < 48) return h + ' h ago'; return Math.round(h / 24) + ' days ago';
   };
-  CG.date = function (ts) { return new Date(ts).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); };
-  CG.count = function (el, to, suffix) {
-    if (!el) return; suffix = suffix || ''; var from = 0, t0 = null, dur = 700;
-    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = to + suffix; return; }
-    function step(t) { if (!t0) t0 = t; var p = Math.min(1, (t - t0) / dur); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))) + suffix; if (p < 1) requestAnimationFrame(step); }
-    requestAnimationFrame(step);
-  };
-  CG.copy = function (text) {
-    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(function () { CG.toast('Copied to clipboard'); }, function () { CG.toast('Copy failed'); }); }
-    else { var t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); CG.toast('Copied to clipboard'); } catch (e) {} t.remove(); }
+  CG.date = function (ts) { return new Date(ts).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); };
+  CG.duration = function (min) { if (min == null) return '—'; if (min < 60) return min + ' min'; var h = Math.floor(min / 60), m = min % 60; return h + ' h' + (m ? ' ' + m + ' min' : ''); };
+  CG.plural = function (n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); };
+  CG.firstName = function () { return String(U.name || '').trim().split(/\s+/)[0] || ''; };
+  CG.copy = function (text, msg) {
+    function ok() { CG.toast(msg || 'Copied'); }
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(ok, function () { CG.toast('Copy failed. Select the text and press Ctrl C.'); }); return; }
+    var t = document.createElement('textarea'); t.value = text; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); ok(); } catch (e) { CG.toast('Copy failed. Select the text and press Ctrl C.'); } t.remove();
   };
   CG.csv = function (name, rows) {
-    var out = rows.map(function (r) { return r.map(function (c) { return '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"'; }).join(','); }).join('\r\n');
-    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + out], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    /* a leading = + - @ would run as a formula in Excel, so such cells get a leading apostrophe */
+    var out = rows.map(function (r) { return r.map(function (c) { var v = String(c == null ? '' : c); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; }).join(','); }).join('\r\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + out], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); a.remove();
   };
+  CG.SEV = ['critical', 'high', 'medium', 'low'];
+  CG.RANK = { critical: 0, high: 1, medium: 2, low: 3 };
+  CG.LBL = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low', 'new': 'New', investigating: 'Investigating', contained: 'Contained', resolved: 'Resolved' };
+  CG.sevTag = function (s) { return '<span class="ld-sev ' + CG.esc(s) + '">' + (CG.LBL[s] || CG.esc(s)) + '</span>'; };
+  CG.statusTag = function (s) { return '<span class="ld-status ' + CG.esc(s) + '">' + (CG.LBL[s] || CG.esc(s)) + '</span>'; };
 
-  /* ---------- Power Pages Web API wrapper ---------- */
+  /* ---------- Power Pages Web API ---------- */
+  CG.token = function () {
+    return new Promise(function (res, rej) {
+      var tries = 0, none = { status: 0, message: 'Not running on Power Pages' };
+      if (CG._noShell) { rej(none); return; }
+      (function wait() {
+        if (window.shell && window.shell.getTokenDeferred) { window.shell.getTokenDeferred().done(res).fail(function () { rej({ status: 401, message: 'No token' }); }); return; }
+        if (++tries < 20) { setTimeout(wait, 150); return; }
+        fetch('/_layout/tokenhtml', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+          .then(function (h) { var m = /value=["']([^"']+)["']/.exec(h); if (m) res(m[1]); else { CG._noShell = true; rej(none); } }, function () { CG._noShell = true; rej(none); });
+      })();
+    });
+  };
   CG.req = function (method, path, body) {
     return new Promise(function (resolve, reject) {
-      if (!(window.shell && window.shell.getTokenDeferred)) { reject({ status: 0, message: 'Not running on Power Pages' }); return; }
-      window.shell.getTokenDeferred().done(function (token) {
+      CG.token().then(function (token) {
         var opt = { method: method, credentials: 'same-origin', headers: { '__RequestVerificationToken': token, 'Accept': 'application/json', 'Content-Type': 'application/json; charset=utf-8' } };
         if (body) opt.body = JSON.stringify(body);
         fetch('/_api/' + path, opt).then(function (res) {
           if (res.status === 204 || res.status === 201) { resolve({ id: res.headers.get('entityid') }); return; }
           return res.text().then(function (txt) {
             var j = null; try { j = JSON.parse(txt); } catch (e) {}
-            if (!res.ok) { reject({ status: res.status, message: (j && j.error && j.error.message) || txt.slice(0, 200) }); return; }
+            if (!res.ok) { reject({ status: res.status, message: (j && j.error && j.error.message) || txt.slice(0, 200), code: j && j.error && j.error.code }); return; }
             resolve(j);
           });
         }, function () { reject({ status: -1, message: 'Network error' }); });
-      }).fail(function () { reject({ status: 401, message: 'No token' }); });
+      }, reject);
     });
   };
   CG.why = function (e, what) {
     var s = e && e.status;
-    if (s === 0) return 'Preview mode: this page is not running on Power Pages, so sample data is shown.';
-    if (s === 401) return 'Sign in to load live ' + what + '.';
-    if (s === 403) return 'Your account has no table permission for ' + what + '. Ask an administrator to assign the SOC Analyst web role.';
-    if (s === 404) return 'The ' + what + ' table or its Web API site setting was not found. Run the Dataverse setup script and enable the Webapi site settings.';
-    if (s === 400) return 'The Web API rejected the request. A column is missing from the Webapi/…/fields site setting. ' + ((e && e.message) || '');
-    return 'Could not reach Dataverse (' + (s || 'error') + '). Showing sample data.';
+    if (s === 0) return 'This preview is not running on Power Pages, so sample data is shown.';
+    if (s === 401) return 'Sign in to see ' + what + '.';
+    if (s === 403) return what === 'incidents' ? 'Your account needs the SOC Analyst role. A portal admin can add it.' : 'Your account doesn’t have permission for ' + what + ' yet. A portal admin needs to check your roles.';
+    if (s === 404) return 'The ' + what + ' table is not set up for the portal yet (Web API site setting missing).';
+    if (s === 400) return 'The portal rejected the request: ' + ((e && e.message) || 'bad request') + '.';
+    if (s === -1) return 'The portal could not be reached. Check your connection and try again.';
+    if (s >= 500) return 'Dataverse had a problem (' + s + '). Try again in a minute.';
+    return 'Dataverse returned an error (' + (s || 'unknown') + ').';
   };
 
-  /* ---------- sample data (used until Dataverse is connected) ---------- */
-  var SEED = [{"id": "INC-2026-8941", "title": "Ransomware Pre-Execution: Cobalt Strike Beaconing Detected", "sev": "critical", "cat": "Ransomware / C2", "mitre": "T1071.001 Web Protocols", "host": "FIN-DB-SVR01", "user": "r.henderson@cyberguard.internal", "src": "Defender XDR", "status": "investigating", "owner": "Jessica Lee (CISO / Lead)", "ago": 4, "risk": 96, "sum": "Suspicious HTTPS traffic beaconing in regular 45s intervals to known adversary C2 IP (185.220.101.44). Cobalt Strike malleable C2 profile identified by EDR behavioral monitor.", "iocs": ["185.220.101.44 (C2 Remote IP)", "hash: 4e8b34f8a846c4f901174092d6e4917b2e3e5c9b687f87a32d1840ab7183e8fa", "process: powershell.exe -enc SQBFAFgA..."], "tl": [{"time": "14:18:02 UTC", "event": "PowerShell spawned with hidden base64 encoded parameters."}, {"time": "14:18:15 UTC", "event": "Outbound TLS session established to untrusted IP 185.220.101.44."}, {"time": "14:18:40 UTC", "event": "Defender XDR triggered Sev-1 alert; memory scan confirmed Cobalt Strike stager."}]}, {"id": "INC-2026-8940", "title": "Active Kerberoasting & Service Ticket Harvesting Spike", "sev": "critical", "cat": "Privilege Escalation", "mitre": "T1558.003 Kerberoasting", "host": "DC-CORP-01", "user": "svc_backup_agent", "src": "Azure Sentinel", "status": "new", "owner": "Unassigned", "ago": 11, "risk": 92, "sum": "Excessive Kerberos TGS requests (over 180 requests in 90 seconds) for service accounts with RC4 encryption. Possible offline hash cracking attempt in progress.", "iocs": ["Event ID: 4769 (Audit Kerberos Service Ticket Operations)", "Target SPN: MSSQLSvc/sql-prod.cyberguard.internal:1433", "Encryption: 0x17 (RC4-HMAC weak cipher requested)"], "tl": [{"time": "14:11:10 UTC", "event": "Spike of Kerberos TGS ticket queries originating from WKS-DEV-08."}, {"time": "14:12:00 UTC", "event": "Sentinel analytics rule 'Kerberoasting Pattern Detection' fired."}]}, {"id": "INC-2026-8939", "title": "Potential Data Exfiltration via Encrypted DNS Tunneling", "sev": "critical", "cat": "Exfiltration", "mitre": "T1048.003 DNS Tunneling", "host": "RND-WS-204", "user": "d.chen@cyberguard.internal", "src": "Palo Alto NGFW", "status": "investigating", "owner": "David Martinez", "ago": 23, "risk": 88, "sum": "High volume of abnormal TXT and null DNS record queries directed to rogue nameserver ns1.darkrelay-sync.cc. Payload inspection indicates compressed document exfiltration.", "iocs": ["ns1.darkrelay-sync.cc (Rogue NS)", "Queries: 14,200 requests / 15 mins", "Average Query Length: 182 characters"], "tl": [{"time": "13:58:12 UTC", "event": "DNS query volume surged 800% above baseline."}, {"time": "14:02:18 UTC", "event": "Network firewall flagged tunneling signature; host auto-quarantined."}]}, {"id": "INC-2026-8938", "title": "Credential Stuffing / Password Spray on Entra ID Admin Portal", "sev": "high", "cat": "Initial Access", "mitre": "T1110.003 Password Spraying", "host": "ENTRA-ID-TENANT", "user": "Multiple (42 Accounts)", "src": "Azure Sentinel", "status": "investigating", "owner": "David Martinez", "ago": 34, "risk": 79, "sum": "Distributed IP network attempting low-and-slow authentication against cloud accounts using common passwords. 3 accounts triggered Risk State 'High'.", "iocs": ["194.26.29.11 (TOR Exit Node)", "User-Agent: python-requests/2.28", "Failed Sign-ins: 384 attempts across 42 identities"], "tl": [{"time": "13:45:00 UTC", "event": "Initial wave of login failures detected across multiple departments."}, {"time": "13:50:00 UTC", "event": "Identity Protection elevated user risk; Conditional Access enforced MFA."}]}, {"id": "INC-2026-8937", "title": "LSASS Memory Dump via MiniDumpWriteDump API", "sev": "high", "cat": "Credential Access", "mitre": "T1003.001 LSASS Memory", "host": "HR-PAYROLL-02", "user": "m.adams@cyberguard.internal", "src": "CrowdStrike Falcon", "status": "contained", "owner": "Monica Patel", "ago": 48, "risk": 84, "sum": "Unsigned binary attempted to read credentials from Local Security Authority Subsystem Service (LSASS) process memory. Blocked in pre-execution by kernel driver.", "iocs": ["File: C:\\Users\\Public\\dbgmon.exe", "Hash: b1946ac92492d2347c6235b4d2611184", "Target Process: lsass.exe (PID 628)"], "tl": [{"time": "13:30:14 UTC", "event": "Host accessed malicious phishing macro attachment."}, {"time": "13:31:02 UTC", "event": "dbgmon.exe dropped into Public folder and executed."}, {"time": "13:31:04 UTC", "event": "Falcon blocked memory access; host network isolated."}]}, {"id": "INC-2026-8936", "title": "Scheduled Task Persistence Created in System32", "sev": "high", "cat": "Persistence", "mitre": "T1053.005 Scheduled Task", "host": "APP-SVR-PROD04", "user": "SYSTEM", "src": "Defender XDR", "status": "investigating", "owner": "Jessica Lee (CISO / Lead)", "ago": 70, "risk": 76, "sum": "Hidden scheduled task registered with SYSTEM privileges configured to run a PowerShell reverse shell every 60 minutes upon reboot.", "iocs": ["Task Name: \\Microsoft\\Windows\\Maintenance\\WinUpdaterService", "Action: wscript.exe C:\\ProgramData\\svchost.vbs"], "tl": [{"time": "13:08:00 UTC", "event": "Schtasks command invoked from cmd.exe under admin context."}]}, {"id": "INC-2026-8935", "title": "Phishing BEC: Suspicious Mail Forwarding Rule Created", "sev": "medium", "cat": "Initial Access", "mitre": "T1114.003 Email Forwarding Rule", "host": "EXCHANGE-ONLINE", "user": "cfo-exec@cyberguard.internal", "src": "Defender XDR", "status": "investigating", "owner": "Monica Patel", "ago": 95, "risk": 68, "sum": "Inbox forwarding rule 'AutoArchive' created to forward all messages containing 'Invoice', 'Wire', or 'Payment' to external inbox audit-financials@protonmail.com.", "iocs": ["Forwarding Address: audit-financials@protonmail.com", "Rule Name: AutoArchive", "IP of modification: 82.102.23.4 (Romania)"], "tl": [{"time": "12:45:00 UTC", "event": "Account accessed from unusual geography without active VPN."}, {"time": "12:46:12 UTC", "event": "New-InboxRule cmdlet executed; alert fired in Defender for Office 365."}]}, {"id": "INC-2026-8934", "title": "Unauthorized Port Scan on Internal DMZ Subnet", "sev": "medium", "cat": "Discovery", "mitre": "T1046 Network Service Discovery", "host": "DMZ-GW-01", "user": "N/A (Network Device)", "src": "Palo Alto NGFW", "status": "contained", "owner": "David Martinez", "ago": 135, "risk": 62, "sum": "SYN scan targeting ports 22, 80, 443, 3389, 445 across 254 internal IP addresses. Source host was a misconfigured contractor laptop.", "iocs": ["Source: 10.50.1.84 (Contractor-VLAN)", "Rate: 4,000 packets/sec"], "tl": [{"time": "12:05:00 UTC", "event": "Firewall IPS tripped SYN flood & scan signature; port blocked at switch."}]}, {"id": "INC-2026-8933", "title": "Outdated OpenSSL Vulnerability Probe (CVE-2023-3817)", "sev": "low", "cat": "Vulnerability", "mitre": "T1190 Exploit Public-Facing App", "host": "WEB-PROXY-EXT", "user": "Anonymous Web Traffic", "src": "Cloudflare WAF", "status": "resolved", "owner": "SOC Auto-Remediation", "ago": 220, "risk": 35, "sum": "Automated vulnerability scanner probed public SSL handshake for DH parameter flaws. Automatically dropped at Cloudflare Edge.", "iocs": ["Scanner IP: 45.154.255.80", "WAF Rule: 100048 (SSL Attack Signature)"], "tl": [{"time": "10:40:00 UTC", "event": "Probe blocked by edge rule; zero internal impact."}]}];
-  var TITLES = [['Phishing campaign targeting finance mailboxes', 'Initial Access', 'EXCHANGE-ONLINE', 'Defender XDR', 'high'], ['Suspicious OAuth app consent granted', 'Persistence', 'ENTRA-ID-TENANT', 'Azure Sentinel', 'medium'], ['Malware blocked on endpoint', 'Execution', 'HR-LT-117', 'CrowdStrike Falcon', 'low'], ['Port scan against public web tier', 'Discovery', 'WAF-EDGE-02', 'Palo Alto NGFW', 'low'], ['Impossible travel sign-in detected', 'Initial Access', 'ENTRA-ID-TENANT', 'Azure Sentinel', 'medium'], ['Unsigned driver loaded on server', 'Defense Evasion', 'APP-SVR-PROD02', 'Defender XDR', 'high'], ['Brute-force against VPN gateway', 'Credential Access', 'VPN-GW-01', 'Palo Alto NGFW', 'medium'], ['USB mass storage on restricted laptop', 'Exfiltration', 'SEC-OPS-LAPTOP02', 'CrowdStrike Falcon', 'low'], ['Web shell upload attempt', 'Persistence', 'WEB-DMZ-03', 'Defender XDR', 'critical'], ['Anomalous data download from SharePoint', 'Collection', 'SPO-TENANT', 'Azure Sentinel', 'high']];
+  /* ---------- sample data (shown only when Dataverse is not connected) ---------- */
+  var SEED = [
+    ['INC-2026-8941', 'Cobalt Strike beaconing from finance database server', 'critical', 'Ransomware / C2', 'T1071.001 Web protocols', 'FIN-DB-SVR01', 'r.henderson', 'EDR', 'investigating', 'Jessica Lee', 4, 96, 'HTTPS beacons every 45 seconds to a known command-and-control address. Memory scan matched a Cobalt Strike stager.', ['185.220.101.44 (C2 address)', 'sha256 4e8b34f8a846c4f901174092d6e4917b2e3e5c9b687f87a32d1840ab7183e8fa', 'powershell.exe -enc SQBFAFgA...'], [['14:18', 'PowerShell started with an encoded command.'], ['14:18', 'Outbound TLS session to 185.220.101.44.'], ['14:19', 'EDR raised a severity 1 alert.']]],
+    ['INC-2026-8940', 'Kerberoasting: burst of service ticket requests', 'critical', 'Privilege escalation', 'T1558.003 Kerberoasting', 'DC-CORP-01', 'svc_backup_agent', 'SIEM', 'new', '', 11, 92, 'Over 180 Kerberos service ticket requests in 90 seconds using RC4 encryption. Likely offline password cracking.', ['Event ID 4769', 'Encryption 0x17 (RC4-HMAC)'], [['14:11', 'Ticket requests spiked from WKS-DEV-08.'], ['14:12', 'SIEM rule for Kerberoasting fired.']]],
+    ['INC-2026-8939', 'Possible data exfiltration over DNS', 'critical', 'Exfiltration', 'T1048.003 DNS tunnelling', 'RND-WS-204', 'd.chen', 'Firewall', 'investigating', 'David Martinez', 23, 88, 'Very high volume of long TXT queries to an unknown name server. Host was quarantined automatically.', ['ns1.darkrelay-sync.cc', '14,200 queries in 15 minutes'], [['13:58', 'DNS volume rose 800% above baseline.'], ['14:02', 'Firewall flagged tunnelling; host quarantined.']]],
+    ['INC-2026-8938', 'Password spray against admin accounts', 'high', 'Initial access', 'T1110.003 Password spraying', 'ENTRA-ID', '42 accounts', 'SIEM', 'investigating', 'David Martinez', 34, 79, 'Slow sign-in attempts from many addresses using common passwords. Three accounts were marked high risk.', ['194.26.29.11 (Tor exit node)', '384 failed sign-ins'], [['13:45', 'First wave of failed sign-ins.'], ['13:50', 'MFA enforced on risky accounts.']]],
+    ['INC-2026-8937', 'Attempt to dump LSASS memory', 'high', 'Credential access', 'T1003.001 LSASS memory', 'HR-PAYROLL-02', 'm.adams', 'EDR', 'contained', 'Monica Patel', 48, 84, 'An unsigned program tried to read credentials from LSASS. Blocked before it ran; host isolated.', ['C:\\Users\\Public\\dbgmon.exe', 'md5 b1946ac92492d2347c6235b4d2611184'], [['13:30', 'User opened a macro attachment.'], ['13:31', 'EDR blocked memory access and isolated the host.']]],
+    ['INC-2026-8936', 'Hidden scheduled task running a reverse shell', 'high', 'Persistence', 'T1053.005 Scheduled task', 'APP-SVR-PROD04', 'SYSTEM', 'EDR', 'investigating', 'Jessica Lee', 70, 76, 'A scheduled task with SYSTEM rights starts a PowerShell reverse shell every hour.', ['\\Microsoft\\Windows\\Maintenance\\WinUpdaterService'], [['13:08', 'schtasks run from an admin command prompt.']]],
+    ['INC-2026-8935', 'Mail forwarding rule sends invoices outside', 'medium', 'Initial access', 'T1114.003 Forwarding rule', 'EXCHANGE-ONLINE', 'cfo-exec', 'Email security', 'investigating', 'Monica Patel', 95, 68, 'Rule "AutoArchive" forwards mail mentioning invoices or payments to an outside address.', ['audit-financials@protonmail.com', '82.102.23.4'], [['12:45', 'Sign-in from an unusual country.'], ['12:46', 'New inbox rule created.']]],
+    ['INC-2026-8934', 'Port scan on the DMZ from a contractor laptop', 'medium', 'Discovery', 'T1046 Network service discovery', 'DMZ-GW-01', '', 'Firewall', 'contained', 'David Martinez', 135, 62, 'SYN scan of five ports across 254 addresses. Source was a misconfigured contractor laptop.', ['10.50.1.84'], [['12:05', 'IPS blocked the scan at the switch.']]],
+    ['INC-2026-8933', 'OpenSSL vulnerability probe (CVE-2023-3817)', 'low', 'Vulnerability', 'T1190 Public-facing app', 'WEB-PROXY-EXT', '', 'WAF', 'resolved', 'Auto-remediation', 220, 35, 'Automated scanner probed the TLS handshake. Dropped at the edge; no internal impact.', ['45.154.255.80'], [['10:40', 'Blocked by an edge rule.']]]
+  ];
+  var HIST = [['Phishing campaign aimed at finance mailboxes', 'high', 'EXCHANGE-ONLINE', 'Email security'], ['Unknown app granted mailbox access', 'medium', 'ENTRA-ID', 'SIEM'], ['Malware blocked on a laptop', 'low', 'HR-LT-117', 'EDR'], ['Port scan against the public web tier', 'low', 'WAF-EDGE-02', 'Firewall'], ['Sign-in from two countries within an hour', 'medium', 'ENTRA-ID', 'SIEM'], ['Unsigned driver loaded on a server', 'high', 'APP-SVR-PROD02', 'EDR'], ['Brute force against the VPN gateway', 'medium', 'VPN-GW-01', 'Firewall'], ['USB storage used on a restricted laptop', 'low', 'SEC-OPS-LT02', 'EDR'], ['Web shell upload attempt', 'critical', 'WEB-DMZ-03', 'EDR'], ['Large download from SharePoint', 'high', 'SPO-TENANT', 'SIEM']];
   function buildSample() {
     var now = Date.now(), out = [], seed = 7;
     function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
-    SEED.forEach(function (s) { out.push({ id: 'demo-' + s.id, ref: s.id, title: s.title, sev: s.sev, status: s.status, cat: s.cat, host: s.host, account: s.user, src: s.src, mitre: s.mitre, owner: s.owner, risk: s.risk, desc: s.sum, notes: '', iocs: s.iocs || [], tl: s.tl || [], created: now - s.ago * 60000, modified: now - s.ago * 60000 }); });
+    SEED.forEach(function (s) {
+      out.push({ id: 'demo-' + s[0], ref: s[0], title: s[1], sev: s[2], cat: s[3], mitre: s[4], host: s[5], account: s[6], src: s[7], status: s[8], owner: s[9], risk: s[11], desc: s[12], notes: '', iocs: s[13], tl: s[14].map(function (t) { return { time: t[0], event: t[1] }; }), created: now - s[10] * 60000, modified: now - s[10] * 60000 });
+    });
     for (var i = 0; i < 28; i++) {
-      var t = TITLES[i % TITLES.length], day = 1 + Math.floor(i / 2.2), when = now - day * 86400000 - Math.floor(rnd() * 80000000);
-      out.push({ id: 'demo-h' + i, ref: 'INC-2026-' + (8900 - i), title: t[0], sev: t[4], status: 'resolved', cat: t[1], host: t[2], account: '', src: t[3], mitre: '', owner: ['David Martinez', 'Monica Patel', 'Jessica Lee'][i % 3], risk: 20 + Math.floor(rnd() * 60), desc: 'Closed after investigation. No further action required.', notes: '', iocs: [], tl: [], created: when, modified: when + (6 + Math.floor(rnd() * 40)) * 60000 });
+      var t = HIST[i % HIST.length], when = now - (1 + Math.floor(i / 2.2)) * 86400000 - Math.floor(rnd() * 60000000);
+      out.push({ id: 'demo-h' + i, ref: 'INC-2026-' + (8900 - i), title: t[0], sev: t[1], status: 'resolved', cat: '', host: t[2], account: '', src: t[3], mitre: '', owner: ['David Martinez', 'Monica Patel', 'Jessica Lee'][i % 3], risk: 20 + Math.floor(rnd() * 60), desc: 'Closed after investigation. No further action needed.', notes: '', iocs: [], tl: [], created: when, modified: when + (6 + Math.floor(rnd() * 40)) * 60000 });
     }
     return out;
   }
-  var DEMO_KEY = 'cg_demo_v2';
+  var DEMO_KEY = 'ld_demo_v3';
   function demoState() { try { return JSON.parse(localStorage.getItem(DEMO_KEY) || '{"created":[],"patch":{}}'); } catch (e) { return { created: [], patch: {} }; } }
   function demoSave(s) { try { localStorage.setItem(DEMO_KEY, JSON.stringify(s)); } catch (e) {} }
 
@@ -167,25 +177,35 @@
   function lines(s) { return String(s || '').split(/\r?\n/).map(function (x) { return x.trim(); }).filter(Boolean); }
   function parseTl(s) { return lines(s).map(function (l) { var p = l.split('|'); return p.length > 1 ? { time: p[0].trim(), event: p.slice(1).join('|').trim() } : { time: '', event: l }; }); }
   function fromRow(r) {
-    return { id: r.cg_incidentid, ref: r.cg_reference || '', title: r.cg_title || '(untitled)', sev: String(r.cg_severity || 'medium').toLowerCase(), status: String(r.cg_status || 'new').toLowerCase(), cat: r.cg_category || '', host: r.cg_host || '', account: r.cg_account || '', src: r.cg_source || '', mitre: r.cg_mitre || '', owner: r.cg_assignedto || '', risk: r.cg_riskscore == null ? '' : r.cg_riskscore, desc: r.cg_description || '', notes: r.cg_notes || '', iocs: lines(r.cg_indicators), tl: parseTl(r.cg_timeline), created: Date.parse(r.createdon) || Date.now(), modified: Date.parse(r.cg_resolvedon) || Date.parse(r.modifiedon) || 0 };
+    var sev = String(r.cg_severity || 'medium').toLowerCase(), st = String(r.cg_status || 'new').toLowerCase();
+    if (!CG.RANK.hasOwnProperty(sev)) sev = 'medium';
+    return { id: r.cg_incidentid, ref: r.cg_reference || '', title: r.cg_title || '(untitled)', sev: sev, status: st, cat: r.cg_category || '', host: r.cg_host || '', account: r.cg_account || '', src: r.cg_source || '', mitre: r.cg_mitre || '', owner: r.cg_assignedto || '', risk: r.cg_riskscore == null ? '' : r.cg_riskscore, desc: r.cg_description || '', notes: r.cg_notes || '', iocs: lines(r.cg_indicators), tl: parseTl(r.cg_timeline), created: Date.parse(r.createdon) || Date.now(), modified: Date.parse(r.cg_resolvedon) || Date.parse(r.modifiedon) || 0 };
   }
-  function toRow(o) {
-    var r = {}; var m = { title: 'cg_title', sev: 'cg_severity', status: 'cg_status', cat: 'cg_category', host: 'cg_host', account: 'cg_account', src: 'cg_source', mitre: 'cg_mitre', owner: 'cg_assignedto', risk: 'cg_riskscore', desc: 'cg_description', notes: 'cg_notes', resolvedon: 'cg_resolvedon' };
-    Object.keys(m).forEach(function (k) { if (o[k] !== undefined && o[k] !== '') r[m[k]] = k === 'risk' ? parseInt(o[k], 10) : o[k]; });
+  /* create: empty values are left out. update: a value the user cleared is sent as null so Dataverse clears it too. */
+  function toRow(o, update) {
+    var r = {}, m = { title: 'cg_title', sev: 'cg_severity', status: 'cg_status', cat: 'cg_category', host: 'cg_host', account: 'cg_account', src: 'cg_source', mitre: 'cg_mitre', owner: 'cg_assignedto', risk: 'cg_riskscore', desc: 'cg_description', notes: 'cg_notes', resolvedon: 'cg_resolvedon' };
+    Object.keys(m).forEach(function (k) {
+      if (o[k] === undefined) return;
+      if (o[k] === '' || o[k] === null) { if (update) r[m[k]] = null; return; }
+      r[m[k]] = k === 'risk' ? parseInt(o[k], 10) : o[k];
+    });
     return r;
   }
+  CG.isUnassigned = function (i) { return !i.owner || /^unassigned$/i.test(String(i.owner).trim()); };
   CG.incidents = {
     _p: null, _t: 0, last: null,
+    /* resolves to { items, live, restricted, status, reason } and never rejects */
     list: function (force) {
       var self = this;
       if (!force && self._p && Date.now() - self._t < 30000) return self._p;
       self._t = Date.now();
       self._p = CG.req('GET', 'cg_incidents?$orderby=createdon desc&$top=500').then(function (d) {
-        var res = { items: (d.value || []).map(fromRow), live: true, reason: '' }; self.last = res; return res;
+        var res = { items: (d.value || []).map(fromRow), live: true, restricted: false, reason: '' }; self.last = res; return res;
       }, function (e) {
-        if (e && (e.status === 401 || e.status === 403)) { var r0 = { items: [], live: false, restricted: true, reason: CG.why(e, 'incidents'), status: e.status }; self.last = r0; return r0; }
+        /* Sample data only when the page is not running on Power Pages (status 0). Any real error is shown as an error. */
+        if (!e || e.status !== 0) { var denied = !!(e && (e.status === 401 || e.status === 403)); var r0 = { items: [], live: false, restricted: denied, failed: !denied, reason: CG.why(e, 'incidents'), status: e && e.status }; self.last = r0; return r0; }
         var st = demoState(), items = buildSample().concat(st.created).map(function (i) { var p = st.patch[i.id]; if (p) for (var k in p) i[k] = p[k]; return i; });
-        var res = { items: items, live: false, reason: CG.why(e, 'incidents'), status: e && e.status }; self.last = res; return res;
+        var res = { items: items, live: false, restricted: false, reason: CG.why(e, 'incidents'), status: e && e.status }; self.last = res; return res;
       });
       return self._p;
     },
@@ -194,24 +214,25 @@
       return CG.req('POST', 'cg_incidents', toRow(o)).then(function (r) {
         return CG.req('GET', 'cg_incidents(' + r.id + ')').then(function (row) { return { live: true, item: fromRow(row) }; }, function () { return { live: true, item: { id: r.id, ref: '' } }; });
       }, function (e) {
-        if (e && e.status !== 0 && e.status !== 404) { throw e; }
+        if (!e || e.status !== 0) { throw e; }
         var st = demoState(), n = 9000 + st.created.length + 1;
-        var item = { id: 'demo-new-' + Date.now(), ref: 'INC-' + new Date().getFullYear() + '-' + n, title: o.title, sev: o.sev || 'medium', status: 'new', cat: o.cat || 'Reported', host: o.host || '', account: o.account || '', src: o.src || 'Manual report', mitre: '', owner: 'Unassigned', risk: '', desc: o.desc || '', notes: '', iocs: [], tl: [{ time: CG.date(Date.now()), event: 'Incident logged from the portal.' }], created: Date.now(), modified: Date.now() };
+        var item = { id: 'demo-new-' + Date.now(), ref: 'INC-' + new Date().getFullYear() + '-' + n, title: o.title, sev: o.sev || 'medium', status: 'new', cat: o.cat || '', host: o.host || '', account: '', src: o.src || 'Portal report', mitre: '', owner: '', risk: '', desc: o.desc || '', notes: '', iocs: [], tl: [{ time: CG.date(Date.now()), event: 'Logged from the portal.' }], created: Date.now(), modified: Date.now() };
         st.created.unshift(item); demoSave(st); return { live: false, item: item };
       });
     },
     update: function (id, patch) {
       var self = this; self._p = null;
       if (patch.status === 'resolved' && !patch.resolvedon) { patch.resolvedon = new Date().toISOString(); patch.modified = Date.now(); }
+      else if (patch.status && patch.status !== 'resolved') { patch.resolvedon = null; }
       if (String(id).indexOf('demo') === 0) { var st = demoState(); st.patch[id] = Object.assign(st.patch[id] || {}, patch); st.created.forEach(function (c) { if (c.id === id) Object.assign(c, patch); }); demoSave(st); return Promise.resolve({ live: false }); }
-      return CG.req('PATCH', 'cg_incidents(' + id + ')', toRow(patch)).then(function () { return { live: true }; });
+      return CG.req('PATCH', 'cg_incidents(' + id + ')', toRow(patch, true)).then(function () { return { live: true }; });
     }
   };
   CG.messages = {
     create: function (o) {
       return CG.req('POST', 'cg_contactmessages', { cg_name: o.name, cg_email: o.email, cg_topic: o.topic, cg_message: o.message }).then(function () { return { live: true }; }, function (e) {
-        if (e && e.status !== 0 && e.status !== 404) throw e;
-        try { var a = JSON.parse(localStorage.getItem('cg_demo_msgs') || '[]'); a.push(Object.assign({ at: Date.now() }, o)); localStorage.setItem('cg_demo_msgs', JSON.stringify(a)); } catch (x) {}
+        if (!e || e.status !== 0) throw e;
+        try { var a = JSON.parse(localStorage.getItem('ld_demo_msgs') || '[]'); a.push(Object.assign({ at: Date.now() }, o)); localStorage.setItem('ld_demo_msgs', JSON.stringify(a)); } catch (x) {}
         return { live: false };
       });
     }
@@ -219,89 +240,299 @@
   CG.stats = function (items) {
     var open = items.filter(function (i) { return i.status !== 'resolved'; });
     var bySev = { critical: 0, high: 0, medium: 0, low: 0 }; open.forEach(function (i) { if (bySev[i.sev] != null) bySev[i.sev]++; });
-    var res = items.filter(function (i) { return i.status === 'resolved' && i.modified > i.created; });
-    var mttr = res.length ? Math.round(res.reduce(function (a, i) { return a + (i.modified - i.created) / 60000; }, 0) / res.length) : null;
-    return { total: items.length, open: open.length, bySev: bySev, resolved: items.length - open.length, mttr: mttr };
+    var done = items.filter(function (i) { return i.status === 'resolved' && i.modified > i.created; });
+    var mttr = done.length ? Math.round(done.reduce(function (a, i) { return a + (i.modified - i.created) / 60000; }, 0) / done.length) : null;
+    return { total: items.length, open: open.length, bySev: bySev, unassigned: open.filter(CG.isUnassigned).length, resolved: items.length - open.length, mttr: mttr };
   };
 
-  /* ---------- top status bar ---------- */
-  function paintStatus(res) {
-    var el = document.getElementById('cgStatus'); if (!el) return;
-    var s = CG.stats(res.items), tag = res.live ? '' : ' <span style="opacity:.75">· sample data</span>';
-    if (s.bySev.critical > 0) el.innerHTML = '<span class="cg-pulse bad"></span><b>' + s.bySev.critical + ' critical incident' + (s.bySev.critical > 1 ? 's' : '') + ' open</b> · ' + s.open + ' open in total' + tag;
-    else if (s.open > 0) el.innerHTML = '<span class="cg-pulse warn"></span><b>' + s.open + ' open incident' + (s.open > 1 ? 's' : '') + '</b> · none critical' + tag;
-    else el.innerHTML = '<span class="cg-pulse"></span><b>All systems operational</b>' + tag;
-  }
-  CG.incidents.list().then(paintStatus);
 
-  /* ---------- header behaviours ---------- */
-  var hd = document.getElementById('cgHeader'), burger = document.getElementById('cgBurger');
-  if (burger) burger.addEventListener('click', function () { var o = hd.classList.toggle('open'); burger.setAttribute('aria-expanded', o ? 'true' : 'false'); });
-  var here = location.pathname.replace(/\/+$/, '').toLowerCase();
-  [].forEach.call(document.querySelectorAll('.cg-nav a'), function (a) {
-    var p = a.pathname.replace(/\/+$/, '').toLowerCase();
-    if ((p || '') === here) a.classList.add('on');
+  /* ---------- generic Dataverse table store (used by Handover and Watchlist) ----------
+     opt: { set: 'cg_handovers', id: 'cg_handoverid', map: { field: 'cg_column' }, order: 'createdon desc', sample: function () { return [] }, key: 'ld_demo_x' }
+     list() resolves to { items, live, restricted, failed, reason } and never rejects. */
+  CG.store = function (opt) {
+    function demo() { try { return JSON.parse(localStorage.getItem(opt.key) || 'null'); } catch (e) { return null; } }
+    function demoSave(v) { try { localStorage.setItem(opt.key, JSON.stringify(v)); } catch (e) {} }
+    function demoItems() { var d = demo(); if (!d) { d = opt.sample(); demoSave(d); } return d; }
+    function from(r) { var o = { id: r[opt.id], created: Date.parse(r.createdon) || 0 }; Object.keys(opt.map).forEach(function (k) { o[k] = r[opt.map[k]] == null ? '' : r[opt.map[k]]; }); return o; }
+    function to(o, update) { var r = {}; Object.keys(opt.map).forEach(function (k) { if (o[k] === undefined) return; if (o[k] === '' || o[k] === null) { if (update) r[opt.map[k]] = null; return; } r[opt.map[k]] = o[k]; }); return r; }
+    var api = {
+      last: null,
+      list: function () {
+        var cols = [opt.id, 'createdon'].concat(Object.keys(opt.map).map(function (k) { return opt.map[k]; })).join(',');
+        return CG.req('GET', opt.set + '?$select=' + cols + '&$orderby=' + (opt.order || 'createdon desc') + '&$top=500').then(function (d) {
+          return (api.last = { items: (d.value || []).map(from), live: true, reason: '' });
+        }, function (e) {
+          if (!e || e.status !== 0) { var denied = !!(e && (e.status === 401 || e.status === 403)); return (api.last = { items: [], live: false, restricted: denied, failed: !denied, reason: CG.why(e, opt.what || 'these records'), status: e && e.status }); }
+          return (api.last = { items: demoItems(), live: false, reason: CG.why(e, opt.what || 'these records'), status: 0 });
+        });
+      },
+      create: function (o) {
+        return CG.req('POST', opt.set, to(o)).then(function (r) { o.id = r.id; o.created = Date.now(); return { live: true, item: o }; }, function (e) {
+          if (!e || e.status !== 0) throw e;
+          var d = demoItems(); o.id = 'demo-' + Date.now() + '-' + Math.floor(Math.random() * 1e4); o.created = Date.now(); d.unshift(o); demoSave(d); return { live: false, item: o };
+        });
+      },
+      update: function (id, patch) {
+        if (String(id).indexOf('demo') === 0) { var d = demoItems(); d.forEach(function (x) { if (x.id === id) Object.assign(x, patch); }); demoSave(d); return Promise.resolve({ live: false }); }
+        return CG.req('PATCH', opt.set + '(' + id + ')', to(patch, true)).then(function () { return { live: true }; });
+      },
+      remove: function (id) {
+        if (String(id).indexOf('demo') === 0) { demoSave(demoItems().filter(function (x) { return x.id !== id; })); return Promise.resolve({ live: false }); }
+        return CG.req('DELETE', opt.set + '(' + id + ')').then(function () { return { live: true }; });
+      }
+    };
+    return api;
+  };
+  var H = 3600000, D = 86400000;
+  CG.handovers = CG.store({
+    set: 'cg_handovers', id: 'cg_handoverid', key: 'ld_demo_handover_v1', what: 'handovers',
+    map: { title: 'cg_title', summary: 'cg_summary', open: 'cg_openitems', watch: 'cg_watch', author: 'cg_author', to: 'cg_handedto' },
+    sample: function () {
+      var n = Date.now();
+      return [
+        { id: 'demo-ho1', created: n - 2 * H, title: 'Day shift', author: 'Monica Patel', to: 'Night shift', summary: 'Busy morning. Three critical incidents opened after 13:30, all being worked. Phishing wave against finance mailboxes is under control: 41 messages purged, sender domain blocked.', open: 'INC-2026-8941 Critical: Cobalt Strike beaconing on FIN-DB-SVR01. Host isolated, memory captured, waiting on forensics.\nINC-2026-8940 Critical: Kerberoasting from WKS-DEV-08. No owner yet, please pick up first.\nINC-2026-8938 High: password spray, MFA enforced, monitoring sign-ins.', watch: 'Watch for any new sign-ins from 194.26.29.11.\nBackup job on FIN-DB-SVR01 runs at 02:00; confirm it completes.' },
+        { id: 'demo-ho2', created: n - 14 * H, title: 'Night shift', author: 'David Martinez', to: 'Day shift', summary: 'Quiet night. One port scan from a contractor laptop on the DMZ, contained. Weekly vulnerability scan finished with no new critical findings.', open: 'INC-2026-8934 Medium: contractor laptop, waiting for the vendor to reimage it.', watch: 'Patch window for VPN-GW-01 is tonight at 23:00.' },
+        { id: 'demo-ho3', created: n - 26 * H, title: 'Day shift', author: 'Jessica Lee', to: 'Night shift', summary: 'Closed four low-severity incidents. Tuned the impossible-travel rule to ignore the Singapore office range.', open: '', watch: '' }
+      ];
+    }
   });
-  var acct = document.getElementById('cgAcct'), ab = document.getElementById('cgAcctBtn');
-  if (ab) { ab.addEventListener('click', function (e) { e.stopPropagation(); var o = acct.classList.toggle('open'); ab.setAttribute('aria-expanded', o ? 'true' : 'false'); }); document.addEventListener('click', function () { acct.classList.remove('open'); }); }
+  CG.indicators = CG.store({
+    set: 'cg_indicators', id: 'cg_indicatorid', key: 'ld_demo_watch_v1', what: 'the watchlist',
+    map: { value: 'cg_value', type: 'cg_type', action: 'cg_action', reason: 'cg_reason', expires: 'cg_expireson', by: 'cg_addedby', incident: 'cg_incidentref' },
+    sample: function () {
+      var n = Date.now(), iso = function (t) { return new Date(t).toISOString(); };
+      return [
+        { id: 'demo-w1', created: n - 3 * H, value: '185.220.101.44', type: 'IP address', action: 'Block', reason: 'Cobalt Strike command-and-control server.', expires: iso(n + 87 * D), by: 'Jessica Lee', incident: 'INC-2026-8941' },
+        { id: 'demo-w2', created: n - 5 * H, value: 'ns1.darkrelay-sync.cc', type: 'Domain', action: 'Block', reason: 'Name server used for DNS tunnelling.', expires: iso(n + 30 * D), by: 'David Martinez', incident: 'INC-2026-8939' },
+        { id: 'demo-w3', created: n - 6 * H, value: '194.26.29.11', type: 'IP address', action: 'Monitor', reason: 'Tor exit node seen in password spray. Alert on any successful sign-in.', expires: iso(n + 7 * D), by: 'David Martinez', incident: 'INC-2026-8938' },
+        { id: 'demo-w4', created: n - 30 * H, value: '4e8b34f8a846c4f901174092d6e4917b2e3e5c9b687f87a32d1840ab7183e8fa', type: 'File hash', action: 'Block', reason: 'Stager dropped on FIN-DB-SVR01.', expires: '', by: 'Jessica Lee', incident: 'INC-2026-8941' },
+        { id: 'demo-w5', created: n - 50 * H, value: 'audit-financials@protonmail.com', type: 'Email address', action: 'Block', reason: 'Destination of the rogue forwarding rule.', expires: iso(n + 60 * D), by: 'Monica Patel', incident: 'INC-2026-8935' },
+        { id: 'demo-w6', created: n - 40 * D, value: 'https://login-microsoft-secure.example/auth', type: 'URL', action: 'Block', reason: 'Credential phishing page from last month.', expires: iso(n - 2 * D), by: 'Monica Patel', incident: '' }
+      ];
+    }
+  });
 
-  /* ---------- command palette ---------- */
-  var PAGES = [
-    { t: 'Home', d: 'Overview, posture and latest incidents', u: '/', k: 'Page', w: 'start overview posture' },
-    { t: 'Dashboard', d: 'Live incident queue, charts and triage', u: '/dashboard/', k: 'Page', w: 'incidents queue triage charts' },
-    { t: 'Incident response', d: 'Severity levels, lifecycle and playbooks', u: '/incident-response/', k: 'Page', w: 'sla severity p1 playbook lifecycle nist' },
-    { t: 'Report an incident', d: 'Tell the on-call team what happened', u: '/incident-response/#report', k: 'Action', w: 'report submit new log escalate' },
-    { t: 'Playbook: Ransomware containment', d: 'Isolate, capture memory, protect backups', u: '/incident-response/#playbooks', k: 'Playbook', w: 'ransomware isolate lateral encryption' },
-    { t: 'Playbook: Business email compromise', d: 'Revoke sessions, remove inbox rules', u: '/incident-response/#playbooks', k: 'Playbook', w: 'bec phishing email entra mailbox' },
-    { t: 'Playbook: Phishing email', d: 'Triage, purge and block a phishing campaign', u: '/incident-response/#playbooks', k: 'Playbook', w: 'phishing link credentials purge' },
-    { t: 'Severity levels (P1–P4)', d: 'Response times and examples', u: '/incident-response/#severity', k: 'Guide', w: 'severity sla critical high medium low' },
-    { t: 'Reports & compliance', d: 'Framework status and closed incidents', u: '/reports-&-analytics/', k: 'Page', w: 'compliance nist iso soc2 cis audit export' },
-    { t: 'FAQ', d: 'Answers to common questions', u: '/faq/', k: 'Page', w: 'questions help how phishing ransomware isolation' },
-    { t: 'About', d: 'The team, coverage and accreditations', u: '/about-us/', k: 'Page', w: 'team csirt accreditation' },
-    { t: 'Contact', d: 'Hotline, email and message form', u: '/contact-us/', k: 'Page', w: 'phone email hotline message' },
-    { t: 'My profile & access', d: 'Your roles and what they unlock', u: '/profile/', k: 'Page', w: 'account roles permission' }
-  ];
-  var pal = document.getElementById('cgPal'), pin = document.getElementById('cgPalIn'), plist = document.getElementById('cgPalList'), sel = 0, shown = [], loaded = false;
-  function index() { var inc = (CG.incidents.last && CG.incidents.last.items || []).filter(function (i) { return i.status !== 'resolved'; }).map(function (i) { return { t: i.title, d: (i.ref || '') + ' · ' + i.sev + ' · ' + i.status, u: '/dashboard/?open=' + encodeURIComponent(i.id), k: 'Incident', w: [i.ref, i.host, i.account, i.cat, i.mitre].join(' ') }; }); return PAGES.concat(inc); }
-  function render() {
-    var q = pin.value.trim().toLowerCase(), words = q.split(/\s+/).filter(Boolean);
-    var scored = index().map(function (x) { var hay = (x.t + ' ' + x.d + ' ' + x.w).toLowerCase(), s = 0; if (!words.length) s = x.k === 'Incident' ? 0 : 1; else { for (var i = 0; i < words.length; i++) { if (hay.indexOf(words[i]) < 0) return null; s += x.t.toLowerCase().indexOf(words[i]) === 0 ? 5 : x.t.toLowerCase().indexOf(words[i]) > -1 ? 3 : 1; } } return { x: x, s: s }; }).filter(Boolean);
-    scored.sort(function (a, b) { return b.s - a.s; });
-    shown = scored.slice(0, 9).map(function (a) { return a.x; });
-    if (q) shown.push({ t: 'Search the whole site for “' + pin.value.trim() + '”', d: 'Full-text results from Power Pages search', u: CG.searchUrl + '?q=' + encodeURIComponent(pin.value.trim()), k: 'Search', w: '' });
-    sel = Math.min(sel, shown.length - 1); if (sel < 0) sel = 0;
-    plist.innerHTML = shown.length ? shown.map(function (x, i) { return '<li><a href="' + CG.esc(x.u) + '" class="' + (i === sel ? 'sel' : '') + '" role="option"><span><b>' + CG.esc(x.t) + '</b><small>' + CG.esc(x.d) + '</small></span><span class="k">' + x.k + '</span></a></li>'; }).join('') : '<li class="none">No matches</li>';
+  /* ---------- built-in account pages (sign in, register, redeem invitation, password) ----------
+     Power Pages draws these pages itself with Bootstrap 3 markup. This tags them with ld-acc classes and
+     tidies a few labels; the "account pages" section of theme.css does the layout. The pages still work
+     if this does not run. */
+  (function () {
+    var p = location.pathname.toLowerCase().replace(/\/+$/, '');
+    var kind = /\/signin$|\/account\/login\/login$|\/account\/login$/.test(p) ? 'signin'
+      : /\/account\/login\/register$/.test(p) ? 'register'
+      : /\/register$|\/redeeminvitation$/.test(p) ? 'invite'
+      : /\/forgotpassword$/.test(p) ? 'forgot'
+      : /\/resetpassword$/.test(p) ? 'reset' : '';
+    if (!kind) return;
+    var root = document.documentElement;
+    root.classList.add('ld-acc-page', 'ld-acc-' + kind);
+    if (!U.signedIn) root.classList.add('ld-acc-anon');
+    function ready() { root.classList.add('ld-acc-ready'); }
+    setTimeout(ready, 1500);
+    var COPY = {
+      signin: ['Sign in', 'Use your Landasan Digital work account.'],
+      register: ['Create an account', 'For Landasan Digital staff. After you register, a portal admin gives you access.'],
+      invite: ['Redeem an invitation', 'Enter the code from your invitation email.'],
+      forgot: ['Reset your password', 'We’ll email you a link to choose a new password.'],
+      reset: ['Choose a new password', '']
+    }[kind];
+    var MS = /azure ?ad|entra|microsoft|login\.windows\.net|login\.microsoftonline/i;
+    function run() {
+      try {
+        var main = document.getElementById('mainContent') || document.body;
+        /* the Sign in / Register / Redeem invitation switch: found by its links, whatever the markup */
+        var TAB = /\/signin\b|\/account\/login\/(login|register)\b|\/register\b|redeeminvitation/i;
+        var skip = function (a) { return a.closest('#ldHd, .ld-ft, #ldPal'); };
+        var tabLinks = [].filter.call(document.querySelectorAll('a[href]'), function (a) { return !skip(a) && TAB.test(a.getAttribute('href')) && /sign in|register|invitation/i.test(a.textContent); });
+        var tabs = null;
+        if (tabLinks.length > 1) {
+          tabs = tabLinks[0].parentNode;
+          while (tabs && tabs !== document.body && tabLinks.filter(function (a) { return tabs.contains(a); }).length < 2) tabs = tabs.parentNode;
+          if (!tabs || tabs === document.body || tabs === main || tabs.querySelector('form')) tabs = null;
+        }
+        var form = main.querySelector('form fieldset, form .form-horizontal, form') || document.querySelector('#mainContent form, form[method="post"]');
+        var anchor = form || tabs;
+        if (!anchor) return;
+        /* the box is the top-level block in the main area that holds the form */
+        var box = anchor;
+        while (box.parentNode && box.parentNode !== main && box.parentNode !== document.body) box = box.parentNode;
+        if (box === main || box === document.body) box = anchor.parentNode;
+        /* Power Pages may draw the tabs outside the form area: move them into the box and hide the empty strip left behind */
+        if (tabs && !box.contains(tabs)) {
+          var old = tabs.parentNode;
+          box.insertBefore(tabs, box.firstChild);
+          var strip = null;
+          while (old && old !== document.body && old !== main && !old.contains(box) && !old.querySelector('#ldHd') && !(old.textContent || '').trim()) { strip = old; old = old.parentNode; }
+          if (strip) strip.style.display = 'none';
+        }
+        box.classList.add('ld-acc');
+        if (tabs) {
+          tabs.classList.add('ld-acc-tabs');
+          var here = location.pathname.toLowerCase().replace(/\/+$/, '');
+          tabLinks.forEach(function (a) {
+            if (!tabs.contains(a)) return;
+            var t = a.textContent.replace(/\s+/g, ' ').trim();
+            var on = (a.pathname || '').toLowerCase().replace(/\/+$/, '') === here || /\bactive\b/.test(a.className + ' ' + (a.parentNode.className || '')) || a.getAttribute('aria-selected') === 'true';
+            a.textContent = /redeem/i.test(t) ? 'Invitation' : t;
+            a.classList.add('ld-tab');
+            if (on) { a.classList.add('ld-on'); a.setAttribute('aria-current', 'page'); }
+          });
+        }
+        /* Power Pages' own headings ("Sign in with an external account" and so on) are kept for screen readers only */
+        [].forEach.call(box.querySelectorAll('legend, h1, h2, h3, h4, .page-header, .page-heading, .breadcrumb'), function (h) {
+          if (/\b(page-header|page-heading|breadcrumb)\b/.test(h.className) || /^(sign in|sign up|register|redeem)\b/i.test(h.textContent.trim())) h.classList.add('ld-sr');
+        });
+        var head = document.createElement('div');
+        head.className = 'ld-acc-head';
+        head.innerHTML = '<h1>' + CG.esc(COPY[0]) + '</h1>' + (COPY[1] ? '<p>' + CG.esc(COPY[1]) + '</p>' : '');
+        box.insertBefore(head, tabs && tabs.parentNode === box ? tabs : box.firstChild);
+        /* the two columns: local account form and external (Microsoft) sign-in */
+        var cols = [].filter.call(box.querySelectorAll('[class*="col-md-"]'), function (c) { return c.querySelector('form, fieldset') && !c.parentNode.closest('[class*="col-md-"]'); });
+        var ext = null, local = null;
+        cols.forEach(function (c) {
+          if (c.querySelector('[name="provider"]')) { c.classList.add('ld-acc-ext'); ext = c; } else { c.classList.add('ld-acc-local'); local = c; }
+          c.parentNode.classList.add('ld-acc-cols');
+        });
+        if (ext && local) {
+          box.classList.add('ld-acc-both');
+          var or = document.createElement('div'); or.className = 'ld-acc-or'; or.innerHTML = '<span>or</span>';
+          ext.parentNode.insertBefore(or, ext.nextSibling);
+        }
+        [].forEach.call(box.querySelectorAll('button[name="provider"]'), function (b) {
+          b.classList.add('ld-acc-provider');
+          if (MS.test(b.textContent + ' ' + b.value + ' ' + b.id + ' ' + b.title)) {
+            b.textContent = kind === 'register' ? 'Register with Microsoft' : 'Sign in with Microsoft';
+            b.title = 'Your Landasan Digital Microsoft work account';
+          }
+        });
+        [].forEach.call(box.querySelectorAll('.checkbox label'), function (l) {
+          [].forEach.call(l.childNodes, function (n) { if (n.nodeType === 3 && /remember me/i.test(n.nodeValue)) n.nodeValue = ' Keep me signed in'; });
+        });
+        [].forEach.call(box.querySelectorAll('a.btn'), function (a) { if (/forgot/i.test(a.textContent + a.href)) { a.classList.add('ld-acc-link'); a.textContent = 'Forgot your password?'; } });
+        if (kind === 'invite') [].forEach.call(box.querySelectorAll('button[type="submit"], button.btn-primary'), function (b) { if (/^\s*register\s*$/i.test(b.textContent)) b.textContent = 'Redeem invitation'; });
+        var help = document.createElement('p');
+        help.className = 'ld-acc-help';
+        help.innerHTML = 'Need help? Call <a href="tel:+60355243133">+60 3-5524 3133</a> or email <a href="mailto:enquiry@landasandigital.com">enquiry@landasandigital.com</a>.';
+        box.appendChild(help);
+      } catch (e) { /* leave the page as Power Pages drew it */ }
+      ready();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+  })();
+
+  /* ---------- header ---------- */
+  var hd = document.getElementById('ldHd'), burger = document.getElementById('ldBurger');
+  if (burger) burger.addEventListener('click', function () { var o = hd.classList.toggle('open'); burger.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+  function closeMenu() { hd.classList.remove('open'); if (burger) burger.setAttribute('aria-expanded', 'false'); }
+  [].forEach.call(document.querySelectorAll('#ldNav a'), function (a) { a.addEventListener('click', closeMenu); });
+  document.addEventListener('click', function (e) { if (hd.classList.contains('open') && !hd.contains(e.target)) closeMenu(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && hd.classList.contains('open')) { closeMenu(); burger.focus(); } });
+  var here = location.pathname.replace(/\/+$/, '').toLowerCase();
+  try { here = decodeURIComponent(here); } catch (e) {}
+  [].forEach.call(document.querySelectorAll('#ldNav a:not(.ld-nav-report)'), function (a) {
+    var p = a.pathname.replace(/\/+$/, '').toLowerCase(); try { p = decodeURIComponent(p); } catch (e) {}
+    var also = (a.getAttribute('data-also') || '').split(' ').filter(Boolean);
+    if (p && (p === here || also.indexOf(here) > -1)) a.setAttribute('aria-current', 'page');
+  });
+  var acct = document.getElementById('ldAcct'), ab = document.getElementById('ldAcctBtn');
+  if (ab) {
+    ab.addEventListener('click', function (e) { e.stopPropagation(); var o = acct.classList.toggle('open'); ab.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+    document.addEventListener('click', function (e) { if (!acct.contains(e.target)) { acct.classList.remove('open'); ab.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && acct.classList.contains('open')) { acct.classList.remove('open'); ab.setAttribute('aria-expanded', 'false'); ab.focus(); } });
   }
-  function openPal() { pal.classList.add('show'); document.body.classList.add('cg-lock'); pin.value = ''; sel = 0; render(); setTimeout(function () { pin.focus(); }, 30); if (!loaded) { loaded = true; CG.incidents.list().then(render); } }
-  function closePal() { pal.classList.remove('show'); document.body.classList.remove('cg-lock'); }
+
+  /* ---------- search panel (Ctrl K or /) ---------- */
+  var PAGES = [
+    { t: 'Dashboard', d: 'Every open incident', u: '/dashboard/', k: 'Page', w: 'incidents queue triage open' },
+    { t: 'Report incident', d: 'Tell the SOC what happened', u: '/incident-response/#report', k: 'Action', w: 'report submit new log' },
+    { t: 'Shift handover', d: 'Read the last handover or write one', u: '/handover/', k: 'Page', w: 'shift handover day night notes' },
+    { t: 'Watchlist', d: 'Indicators we block or monitor', u: '/watchlist/', k: 'Page', w: 'ioc indicator ip domain hash url block monitor' },
+    { t: 'Playbooks', d: 'Step-by-step checklists', u: '/playbooks/', k: 'Page', w: 'playbook checklist runbook' },
+    { t: 'Ransomware playbook', d: 'Isolate, capture memory, protect backups', u: '/playbooks/#pb-ransomware', k: 'Playbook', w: 'ransomware encryption lateral' },
+    { t: 'Email account takeover playbook', d: 'Revoke sessions, remove inbox rules', u: '/playbooks/#pb-bec', k: 'Playbook', w: 'bec email account takeover' },
+    { t: 'Phishing playbook', d: 'Purge, block and check who clicked', u: '/playbooks/#pb-phishing', k: 'Playbook', w: 'phishing link credentials' },
+    { t: 'Malware playbook', d: 'Isolate, scan, find how it got in', u: '/playbooks/#pb-malware', k: 'Playbook', w: 'malware virus trojan endpoint' },
+    { t: 'Suspicious sign-in playbook', d: 'Impossible travel, MFA fatigue, risky sign-in', u: '/playbooks/#pb-signin', k: 'Playbook', w: 'sign-in login mfa travel identity' },
+    { t: 'Lost or stolen device playbook', d: 'Wipe, revoke, report', u: '/playbooks/#pb-device', k: 'Playbook', w: 'lost stolen laptop phone' },
+    { t: 'Data leak playbook', d: 'Contain, assess, notify', u: '/playbooks/#pb-leak', k: 'Playbook', w: 'data leak breach pdpa exfiltration' },
+    { t: 'Exploited public system playbook', d: 'Patch, isolate, hunt', u: '/playbooks/#pb-exploit', k: 'Playbook', w: 'vulnerability cve exploit web server' },
+    { t: 'Severity levels', d: 'P1 to P4 and response times', u: '/incident-response/#severity', k: 'Guide', w: 'severity sla p1 p2 critical high' },
+    { t: 'Escalation and message templates', d: 'Who to tell, by when, and what to say', u: '/escalation/', k: 'Guide', w: 'escalation notify client ciso pdpa nacsa template' },
+    { t: 'Reports', d: 'Trends and resolved incidents', u: '/reports/', k: 'Page', w: 'reports export metrics' },
+    { t: 'Help', d: 'Guides and common questions', u: '/faq/', k: 'Page', w: 'faq questions help' },
+    { t: 'Contact the SOC', d: 'Hotline, email and message form', u: '/contact-us/', k: 'Page', w: 'phone email hotline' },
+    { t: 'Profile and access', d: 'Your roles', u: '/profile/', k: 'Page', w: 'account roles access' },
+    { t: 'About this portal', d: 'What it is and who runs it', u: '/about-us/', k: 'Page', w: 'about team' }
+  ];
+  var pal = document.getElementById('ldPal'), pin = document.getElementById('ldPalIn'), plist = document.getElementById('ldPalList'), sel = 0, shown = [], loaded = false, lastFocus = null;
+  function index() {
+    var inc = (CG.incidents.last && CG.incidents.last.items || []).filter(function (i) { return i.status !== 'resolved'; })
+      .map(function (i) { return { t: i.title, d: (i.ref ? i.ref + ', ' : '') + (CG.LBL[i.sev] || i.sev).toLowerCase() + ', ' + (CG.LBL[i.status] || i.status).toLowerCase(), u: '/dashboard/?open=' + encodeURIComponent(i.id), k: 'Incident', sev: i.sev, w: [i.ref, i.host, i.account, i.cat, i.mitre].join(' ') }; });
+    return PAGES.concat(inc);
+  }
+  var GROUPS = [['Incident', 'Open incidents'], ['Action', 'Actions'], ['Page', 'Pages'], ['Playbook', 'Playbooks'], ['Guide', 'Guides'], ['Search', '']];
+  var START = ['/incident-response/#report', '/dashboard/', '/handover/', '/watchlist/', '/playbooks/', '/escalation/'];
+  function render() {
+    var raw = pin.value.trim(), q = raw.toLowerCase(), words = q.split(/\s+/).filter(Boolean), html = '', n = 0;
+    shown = [];
+    if (!words.length) {
+      shown = START.map(function (u) { return PAGES.filter(function (x) { return x.u === u; })[0]; }).filter(Boolean);
+      html = '<li class="grp" role="presentation">Go to</li>' + shown.map(item).join('');
+    } else {
+      var scored = index().map(function (x) {
+        var hay = (x.t + ' ' + x.d + ' ' + x.w).toLowerCase(), tl = x.t.toLowerCase(), s = 0;
+        for (var i = 0; i < words.length; i++) { if (hay.indexOf(words[i]) < 0) return null; s += tl.indexOf(words[i]) === 0 ? 5 : tl.indexOf(words[i]) > -1 ? 3 : 1; }
+        return { x: x, s: s };
+      }).filter(Boolean);
+      scored.sort(function (a, b) { return b.s - a.s; });
+      var top = scored.slice(0, 9).map(function (a) { return a.x; });
+      /* groups appear in the order of their best match, so the top result stays first */
+      var order = []; top.forEach(function (x) { if (order.indexOf(x.k) < 0) order.push(x.k); });
+      GROUPS.slice().sort(function (a, b) { return order.indexOf(a[0]) - order.indexOf(b[0]); }).forEach(function (g) {
+        var inG = top.filter(function (x) { return x.k === g[0]; });
+        if (!inG.length) return;
+        html += '<li class="grp" role="presentation">' + g[1] + '</li>' + inG.map(function (x) { shown.push(x); return item(x); }).join('');
+      });
+      var all = { t: 'Search the whole site for “' + raw + '”', d: 'Full-text search of every page', u: CG.searchUrl + '?q=' + encodeURIComponent(raw), k: 'Search' };
+      if (!shown.length) html += '<li class="none" role="presentation">No pages or playbooks match “' + CG.esc(raw) + '”.</li>';
+      html += '<li class="grp sep" role="presentation"></li>' + item(all); shown.push(all);
+    }
+    function item(x) {
+      var i = n++, dot = x.sev ? '<i class="dot ' + CG.esc(x.sev) + '" aria-hidden="true"></i>' : '';
+      return '<li role="presentation"><a href="' + CG.esc(x.u) + '" id="ldOpt' + i + '" role="option" aria-selected="false">' + dot + '<span class="tx"><b>' + CG.esc(x.t) + '</b><small>' + CG.esc(x.d) + '</small></span><span class="go" aria-hidden="true">Enter</span></a></li>';
+    }
+    sel = Math.max(0, Math.min(sel, shown.length - 1));
+    plist.innerHTML = html;
+    mark();
+  }
+  function mark() {
+    [].forEach.call(plist.querySelectorAll('a[role="option"]'), function (a, i) { a.classList.toggle('sel', i === sel); a.setAttribute('aria-selected', String(i === sel)); });
+    var cur = document.getElementById('ldOpt' + sel);
+    pin.setAttribute('aria-activedescendant', cur ? cur.id : '');
+    if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest' });
+  }
+  function openPal() { lastFocus = document.activeElement; pal.classList.add('is-open'); document.body.classList.add('ld-lock'); pin.value = ''; sel = 0; render(); setTimeout(function () { pin.focus(); }, 20); if (!loaded && U.signedIn) { loaded = true; CG.incidents.list().then(function () { if (pin.value.trim()) render(); }); } }
+  function closePal() { pal.classList.remove('is-open'); document.body.classList.remove('ld-lock'); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
   CG.openSearch = openPal;
-  var ob = document.getElementById('cgOpenPal'); if (ob) ob.addEventListener('click', openPal);
+  if (U.signedIn) pin.placeholder = 'Search pages, playbooks and open incidents';
+  document.getElementById('ldPalClose').addEventListener('click', closePal);
+  plist.addEventListener('mousemove', function (e) { var a = e.target.closest && e.target.closest('a[role="option"]'); if (a) { var i = +a.id.replace('ldOpt', ''); if (i !== sel) { sel = i; mark(); } } });
+  document.getElementById('ldSearchBtn').addEventListener('click', openPal);
   [].forEach.call(document.querySelectorAll('[data-open-search]'), function (b) { b.addEventListener('click', openPal); });
-  pal.addEventListener('click', function (e) { if (e.target === pal) closePal(); });
+  pal.addEventListener('click', function (e) { if (e.target === pal) closePal(); else if (e.target.closest('#ldPalList a')) { pal.classList.remove('is-open'); document.body.classList.remove('ld-lock'); } });
   pin.addEventListener('input', function () { sel = 0; render(); });
   pin.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(shown.length - 1, sel + 1); render(); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); render(); }
-    else if (e.key === 'Enter' && shown[sel]) { e.preventDefault(); location.href = shown[sel].u; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(shown.length - 1, sel + 1); mark(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); mark(); }
+    else if (e.key === 'Enter' && shown[sel]) { e.preventDefault(); closePal(); location.href = shown[sel].u; }
   });
   document.addEventListener('keydown', function (e) {
-    var tag = (e.target.tagName || '').toLowerCase(), typing = tag === 'input' || tag === 'textarea' || tag === 'select';
-    if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); pal.classList.contains('show') ? closePal() : openPal(); }
-    else if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey) { e.preventDefault(); openPal(); }
-    else if (e.key === 'Escape' && pal.classList.contains('show')) closePal();
+    var tag = (e.target.tagName || '').toLowerCase(), typing = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable;
+    if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); pal.classList.contains('is-open') ? closePal() : openPal(); }
+    else if (e.key === '/' && !typing) { e.preventDefault(); openPal(); }
+    else if (e.key === 'Escape' && pal.classList.contains('is-open')) closePal();
   });
-
-  /* ---------- reveal on scroll + copy buttons ---------- */
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-copy]'); if (b) CG.copy(b.getAttribute('data-copy')); });
-  CG.reveal = function () {
-    var els = [].slice.call(document.querySelectorAll('.cg-reveal:not(.in)'));
-    document.documentElement.classList.add('cg-anim');
-    setTimeout(function () { els.forEach(function (x) { if (!x.classList.contains('in')) x.classList.add('in'); }); }, 4000);
-    if (!('IntersectionObserver' in window)) { els.forEach(function (x) { x.classList.add('in'); }); return; }
-    var io = new IntersectionObserver(function (en) { en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }); }, { threshold: .08 });
-    els.forEach(function (x) { io.observe(x); });
-  };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', CG.reveal); else CG.reveal();
 })();
 </script>
 {% endraw %}

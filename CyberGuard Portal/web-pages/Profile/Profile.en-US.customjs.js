@@ -1,10 +1,10 @@
-/* Profile — shows whether the signed-in account can use the live dashboard */
+/* Profile: checks live whether this account can read incidents. */
 (function () {
   var note = document.getElementById('canDashNote'); if (!note || !window.CG) return;
   CG.incidents.list().then(function (r) {
-    var dot = document.querySelector('#canDash .cg-dot');
-    if (r.live) { note.textContent = '(yes)'; dot.className = 'cg-dot ok'; }
-    else if (r.status === 403) { note.textContent = '(no: needs the SOC Analyst role)'; }
-    else { note.textContent = '(sample data only: Dataverse is not connected)'; }
+    var mk = document.querySelector('#canDash .mk'), ask = document.getElementById('askAccess');
+    if (r.live) { mk.className = 'mk yes'; mk.textContent = '✓'; note.textContent = 'Yes. Your roles include access to incidents.'; if (ask) ask.hidden = true; }
+    else if (r.restricted) { mk.className = 'mk no'; mk.textContent = '✕'; note.textContent = 'Not yet. You need the SOC Analyst role; a portal admin can add it.'; }
+    else { mk.className = 'mk wait'; mk.textContent = '–'; note.textContent = (r.failed ? 'Couldn’t check right now. ' : 'Can’t check here. ') + r.reason; }
   });
 })();

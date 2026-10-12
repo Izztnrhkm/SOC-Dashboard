@@ -1,95 +1,43 @@
-{% comment %} CyberGuard — Home. Text uses content snippets (with defaults) so admins can edit it in Power Pages Studio. {% endcomment %}
-<div class="cg" id="mainContent">
-
-  <section class="cg-hero">
-    <div class="cg-wrap">
-      <div>
-        <span class="tag"><span class="cg-pulse"></span>{% if user %}Welcome back, {{ user.fullname | escape }}{% else %}Security operations portal{% endif %}</span>
-        <h1>{{ snippets['Home/Hero title'] | default: 'Detect, report and resolve incidents <em>faster</em>.' }}</h1>
-        <p class="lead">{{ snippets['Home/Hero lead'] | default: 'One place to see what is happening right now, report a problem in under a minute, and follow the right playbook step by step.' }}</p>
-        <div class="cg-hero-search">
-          <button type="button" data-open-search aria-label="Search the portal">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            Search playbooks, incidents, answers…<kbd>Ctrl K</kbd>
-          </button>
-        </div>
-        <div class="cg-quick"><span>Try:</span>
-          <a href="{{ sitemarkers['Search'].url | default: '/search/' | escape }}?q=ransomware">ransomware</a>
-          <a href="{{ sitemarkers['Search'].url | default: '/search/' | escape }}?q=phishing">phishing</a>
-          <a href="{{ sitemarkers['Search'].url | default: '/search/' | escape }}?q=isolation">network isolation</a>
-          <a href="/incident-response/#severity">severity levels</a>
-        </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
-          <a class="cg-btn primary" href="/incident-response/#report">Report an incident</a>
-          <a class="cg-btn outline-light" href="/dashboard/">Open dashboard</a>
-        </div>
-      </div>
-
-      <aside class="cg-posture" aria-live="polite">
-        <div class="lbl">Current threat posture</div>
-        <div class="lvl"><span class="cg-pulse" id="postDot"></span><span id="postLvl">Checking…</span></div>
-        <div class="meter" aria-hidden="true"><i id="postPin" style="left:12%"></i></div>
-        <div class="rows">
-          <div><span>Open incidents</span><b id="pOpen">–</b></div>
-          <div><span>Critical open</span><b id="pCrit">–</b></div>
-          <div><span>Resolved this week</span><b id="pRes">–</b></div>
-          <div><span>Average time to contain</span><b id="pMttr">–</b></div>
-          <div><span>Data source</span><b id="pSrc">–</b></div>
-        </div>
-      </aside>
+{% comment %} Landasan Digital SOC Portal - Home. The large sentence is built from live incident data by the page script. {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-home">
+    <p class="ld-hello" id="hello">{% if user %}Hello, {{ user.fullname | split: ' ' | first | escape }}.{% else %}Welcome to the SOC Portal.{% endif %}</p>
+    <h1 class="ld-now" id="now" aria-live="polite">Checking open incidents…</h1>
+    <p class="ld-now-sub" id="nowSub"></p>
+    <div class="ld-actions">
+      <a class="ld-btn primary" href="/dashboard/">Open the dashboard</a>
+      <a class="ld-btn" href="/incident-response/#report">Report incident</a>
     </div>
-  </section>
 
-  <div class="cg-wrap">
-    <section class="cg-float cg-grid cg-g4" aria-label="Key figures">
-      <div class="cg-stat"><b>24 / 7</b><span>Monitoring, 3 regions</span></div>
-      <div class="cg-stat"><b>4.2 min</b><span>Mean time to detect</span></div>
-      <div class="cg-stat"><b>16.5 min</b><span>Mean time to contain</span></div>
-      <div class="cg-stat"><b>99.8%</b><span>Sensors healthy</span></div>
-    </section>
-
-    <section class="cg-section">
-      <div class="cg-section-head"><div><h2 class="cg-h2">What do you need to do?</h2><p class="cg-sub">The three things people come here for.</p></div></div>
-      <div class="cg-grid cg-g3">
-        <a class="cg-card cg-reveal" href="/incident-response/#report">
-          <span class="cg-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span>
-          <h3>Report an incident</h3><p>Something looks wrong? Tell the on-call team what you saw. It takes under a minute.</p><span class="more">Start a report →</span>
-        </a>
-        <a class="cg-card cg-reveal" href="/dashboard/">
-          <span class="cg-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
-          <h3>Track what is open</h3><p>See every open incident, filter by severity and update status as you work.</p><span class="more">Open the dashboard →</span>
-        </a>
-        <a class="cg-card cg-reveal" href="/incident-response/#playbooks">
-          <span class="cg-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 8h8M8 12h8"/></svg></span>
-          <h3>Follow a playbook</h3><p>Checklists for ransomware, email compromise and phishing with copy-ready commands.</p><span class="more">Browse playbooks →</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="cg-section cg-split-2">
-      <div>
-        <div class="cg-section-head" style="margin-bottom:12px"><div><h2 class="cg-h2">Latest open incidents</h2><p class="cg-sub" id="feedSub">Loading…</p></div><a class="cg-btn ghost sm" href="/dashboard/">View all</a></div>
-        <div class="cg-card" style="padding:6px 24px">
-          <ul class="cg-feed" id="feed"><li><div class="cg-skel" style="width:100%;height:44px"></div></li><li><div class="cg-skel" style="width:100%;height:44px"></div></li><li><div class="cg-skel" style="width:100%;height:44px"></div></li></ul>
+    <div class="ld-cols">
+      <section aria-labelledby="attnH">
+        <div class="ld-sec-head">
+          <h2 class="ld-h2" id="attnH">Needs attention</h2>
+          <a class="ld-small" href="/dashboard/" id="allLink">All open incidents</a>
         </div>
-      </div>
-      <div>
-        <div class="cg-section-head" style="margin-bottom:12px"><div><h2 class="cg-h2">Explore</h2><p class="cg-sub">Everything else, one click away.</p></div></div>
-        <div class="cg-list">
-          <a class="cg-li" href="/reports-&-analytics/"><div><b>Reports &amp; compliance</b><span>Framework status and the post-incident log.</span></div><span class="arr">→</span></a>
-          <a class="cg-li" href="/faq/"><div><b>FAQ</b><span>Severity, isolation, phishing, ransomware.</span></div><span class="arr">→</span></a>
-          <a class="cg-li" href="/about-us/"><div><b>About the team</b><span>Coverage, tooling and accreditations.</span></div><span class="arr">→</span></a>
-          <a class="cg-li" href="/contact-us/"><div><b>Contact</b><span>Hotline, email and message form.</span></div><span class="arr">→</span></a>
-        </div>
-      </div>
-    </section>
+        <ul class="ld-list" id="feed"><li class="ld-empty">Loading…</li></ul>
+      </section>
 
-    <section class="cg-cta">
       <div>
-        <h2 class="cg-h2">Active ransomware or a compromised account?</h2>
-        <p>Don’t wait for a ticket. Call the 24/7 hotline: <b style="color:#fff">{{ snippets['Hotline'] | default: '+1 (800) 555-2923' }}</b></p>
+        <section class="ld-side" aria-labelledby="hotH">
+          <h2 id="hotH">Active breach or ransomware?</h2>
+          <p class="hot"><a href="tel:+60355243133">+60 3-5524 3133</a></p>
+          <p>Call the 24/7 hotline first, then report it here.</p>
+        </section>
+        <section class="ld-side" aria-labelledby="hoH">
+          <h2 id="hoH">Last handover</h2>
+          <div id="lastHo"><p class="ld-muted">Loading…</p></div>
+        </section>
+        <section class="ld-side" aria-labelledby="pbH">
+          <h2 id="pbH">Quick links</h2>
+          <ul class="ld-links">
+            <li><a href="/playbooks/">Playbooks<small>Checklists for ransomware, phishing, account takeover and more</small></a></li>
+            <li><a href="/watchlist/">Watchlist<small>Indicators we block or monitor</small></a></li>
+            <li><a href="/escalation/">Escalation<small>Who to tell, by when, and what to say</small></a></li>
+            <li><a href="/incident-response/#severity">Severity levels<small>P1 to P4 and response times</small></a></li>
+          </ul>
+        </section>
       </div>
-      <a class="cg-btn light" href="/contact-us/">Contact options</a>
-    </section>
+    </div>
   </div>
 </div>

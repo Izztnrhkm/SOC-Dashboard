@@ -1,114 +1,106 @@
-{% comment %} CyberGuard — Dashboard. Data comes from the Dataverse table cg_incident via the Power Pages Web API (see customjs). {% endcomment %}
-<div class="cg" id="mainContent">
-  <div class="cg-wrap cg-page">
-    <nav class="cg-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Dashboard</span></nav>
-    <header class="cg-head cg-row" style="align-items:flex-end">
+{% comment %} Landasan Digital SOC Portal - Dashboard. Rows come from the Dataverse table cg_incident through the Power Pages Web API (see the page script). {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
       <div>
-        <h1 class="cg-h1">Incident dashboard</h1>
-        <p class="cg-lead" style="margin-top:6px"><span id="liveBadge" class="cg-badge">Loading…</span> <span id="updated" class="cg-muted" style="font-size:14px;margin-left:6px"></span></p>
+        <h1>Incidents</h1>
+        <p class="ld-source" id="source">Loading…</p>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="cg-btn ghost" id="btnRefresh" type="button">Refresh</button>
-        <button class="cg-btn ghost" id="btnCsv" type="button">Export CSV</button>
-        <button class="cg-btn primary" id="btnNew" type="button">+ Log incident</button>
+      <div class="ld-actions">
+        <button class="ld-btn quiet" id="btnRefresh" type="button">Refresh</button>
+        <button class="ld-btn" id="btnCsv" type="button">Export CSV</button>
+        <button class="ld-btn primary" id="btnNew" type="button">Report incident</button>
       </div>
     </header>
 
-    <div id="conn" class="cg-notice warn" style="display:none;margin-bottom:20px" role="status"><span aria-hidden="true">⚠</span><div id="connText"></div></div>
+    <div class="ld-note" id="conn" hidden role="status"><div id="connText"></div></div>
 
-    <section class="cg-grid cg-g4" aria-label="Key figures">
-      <div class="cg-stat"><b id="kOpen">–</b><span>Open incidents</span></div>
-      <div class="cg-stat"><b id="kCrit" style="color:var(--crit)">–</b><span>Critical open</span></div>
-      <div class="cg-stat"><b id="kUnassigned">–</b><span>Unassigned</span></div>
-      <div class="cg-stat"><b id="kMttr">–</b><span>Avg time to contain</span></div>
-    </section>
+    <div class="ld-tabs" id="tabs" role="group" aria-label="Filter open incidents by severity"></div>
 
-    <section class="cg-grid cg-g2" style="margin-top:20px">
-      <div class="cg-card">
-        <div class="cg-row" style="align-items:center"><h3 class="cg-h3">Incidents per day</h3><span class="cg-muted" style="font-size:14px">Last 14 days</span></div>
-        <div class="cg-bars" id="barDays" role="img" aria-label="Incidents per day for the last 14 days"></div>
+    <div class="ld-toolbar">
+      <div class="ld-search grow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="ld-sr" for="fQ">Search incidents</label>
+        <input class="ld-input" id="fQ" type="search" placeholder="Search title, reference, host or owner" autocomplete="off">
       </div>
-      <div class="cg-card">
-        <h3 class="cg-h3" style="margin-bottom:16px">Open by severity</h3>
-        <div class="cg-donut">
-          <svg viewBox="0 0 120 120" id="donut" role="img" aria-label="Open incidents by severity"></svg>
-          <div class="cg-legend" id="legend"></div>
-        </div>
-      </div>
-    </section>
+      <label class="ld-sr" for="fStatus">Status</label>
+      <select class="ld-select" id="fStatus">
+        <option value="open">Open</option>
+        <option value="new">New</option>
+        <option value="investigating">Investigating</option>
+        <option value="contained">Contained</option>
+        <option value="resolved">Resolved</option>
+        <option value="all">All statuses</option>
+      </select>
+      <label class="ld-sr" for="fOwner">Owner</label>
+      <select class="ld-select" id="fOwner"><option value="all">Any owner</option><option value="me">Mine</option><option value="none">No owner</option></select>
+    </div>
 
-    <section class="cg-section" style="margin-top:36px">
-      <div class="cg-bar">
-        <div class="cg-search-inline grow">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <label class="cg-sr" for="fQ">Search incidents</label>
-          <input class="cg-in" id="fQ" type="search" placeholder="Search by reference, title, host, account or technique" autocomplete="off">
-        </div>
-        <label class="cg-sr" for="fStatus">Status</label>
-        <select class="cg-sel" id="fStatus" style="width:auto;min-width:160px">
-          <option value="open">Open only</option><option value="all">All statuses</option><option value="new">New</option><option value="investigating">Investigating</option><option value="contained">Contained</option><option value="resolved">Resolved</option>
-        </select>
-        <label class="cg-sr" for="fOwner">Owner</label>
-        <select class="cg-sel" id="fOwner" style="width:auto;min-width:150px"><option value="all">Any owner</option><option value="me">Assigned to me</option><option value="none">Unassigned</option></select>
-      </div>
-      <div id="chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" role="group" aria-label="Filter by severity"></div>
-      <div class="cg-tablewrap stack">
-        <table class="cg-table" aria-live="polite">
-          <thead><tr>
-            <th data-sort="sev">Severity<span class="arrow"></span></th><th data-sort="title">Incident<span class="arrow"></span></th><th data-sort="host">Asset<span class="arrow"></span></th><th data-sort="owner">Owner<span class="arrow"></span></th><th data-sort="created">Age<span class="arrow"></span></th><th data-sort="status">Status<span class="arrow"></span></th>
-          </tr></thead>
-          <tbody id="rows"><tr><td colspan="6"><div class="cg-skel" style="height:40px"></div></td></tr></tbody>
-        </table>
-      </div>
-      <div class="cg-pager"><span id="info"></span><span style="display:flex;gap:8px"><button class="cg-btn ghost sm" id="prev" type="button">← Previous</button><button class="cg-btn ghost sm" id="next" type="button">Next →</button></span></div>
-    </section>
+    <div class="ld-tablewrap">
+      <table class="ld-table stack">
+        <caption class="ld-sr">Incidents. Select a row to see details and update it.</caption>
+        <thead><tr>
+          <th scope="col" data-sort="sev"><button type="button">Severity</button></th>
+          <th scope="col" data-sort="title"><button type="button">Incident</button></th>
+          <th scope="col" data-sort="host"><button type="button">Asset</button></th>
+          <th scope="col" data-sort="owner"><button type="button">Owner</button></th>
+          <th scope="col" data-sort="created"><button type="button">Opened</button></th>
+          <th scope="col" data-sort="status"><button type="button">Status</button></th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="6" class="ld-muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="ld-pager"><span id="info" aria-live="polite"></span><span><button class="ld-btn sm" id="prev" type="button">Previous</button><button class="ld-btn sm" id="next" type="button">Next</button></span></div>
   </div>
 
-  <div class="cg-scrim" id="dBg"></div>
-  <aside class="cg-drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-hidden="true">
+  <div class="ld-scrim" id="dBg"></div>
+  <aside class="ld-drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-hidden="true">
     <header>
-      <div><div id="dBadges" style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap"></div><h2 id="dTitle"></h2></div>
-      <button class="cg-x" id="dClose" type="button" aria-label="Close">×</button>
+      <div>
+        <div class="tags" id="dTags"></div>
+        <h2 id="dTitle"></h2>
+      </div>
+      <button class="ld-x" id="dClose" type="button" aria-label="Close">&times;</button>
     </header>
-    <div class="scroll">
-      <p id="dSum" style="color:var(--text-2);margin-bottom:22px"></p>
-      <dl class="cg-dl" id="dMeta"></dl>
-      <h3 class="cg-h3" style="margin-bottom:10px">Indicators</h3>
-      <ul id="dIoc" style="margin:0 0 24px;padding-left:20px;font-size:14px"></ul>
-      <h3 class="cg-h3" style="margin-bottom:14px">Timeline</h3>
-      <ul class="cg-tl" id="dTl"></ul>
-      <h3 class="cg-h3" style="margin:6px 0 14px">Update</h3>
-      <div class="cg-grid cg-g2" style="gap:14px">
-        <div class="cg-field"><label for="dStatus">Status</label><select class="cg-sel" id="dStatus"><option value="new">New</option><option value="investigating">Investigating</option><option value="contained">Contained</option><option value="resolved">Resolved</option></select></div>
-        <div class="cg-field"><label for="dOwner">Owner</label><input class="cg-in" id="dOwner" placeholder="Name of analyst"></div>
+    <div class="body">
+      <p class="desc" id="dDesc"></p>
+      <dl class="ld-meta" id="dMeta"></dl>
+      <h3>Indicators</h3>
+      <ul class="ld-iocs" id="dIoc"></ul>
+      <h3>Timeline</h3>
+      <ul class="ld-tl" id="dTl"></ul>
+      <h3>Update</h3>
+      <div class="ld-grid2">
+        <div class="ld-field"><label for="dStatus">Status</label><select class="ld-select" id="dStatus"><option value="new">New</option><option value="investigating">Investigating</option><option value="contained">Contained</option><option value="resolved">Resolved</option></select></div>
+        <div class="ld-field"><div class="ld-labelrow"><label for="dOwner">Owner</label><button class="ld-link ld-small" id="dMe" type="button">Assign to me</button></div><input class="ld-input" id="dOwner" placeholder="Analyst name"></div>
       </div>
-      <button class="cg-btn ghost sm" id="dMe" type="button" style="margin:-6px 0 18px">Assign to me</button>
-      <div class="cg-field"><label for="dNotes">Analyst notes</label><textarea class="cg-ta" id="dNotes" placeholder="What did you find or do?"></textarea></div>
-      <div class="cg-actions" style="justify-content:space-between">
-        <button class="cg-btn ghost" id="dCopy" type="button">Copy summary</button>
-        <button class="cg-btn primary" id="dSave" type="button">Save changes</button>
-      </div>
+      <div class="ld-field"><label for="dNotes">Notes</label><textarea class="ld-text" id="dNotes" placeholder="What you found or did"></textarea></div>
     </div>
+    <footer>
+      <button class="ld-btn quiet" id="dCopy" type="button">Copy summary</button>
+      <button class="ld-btn primary" id="dSave" type="button">Save changes</button>
+    </footer>
   </aside>
 
-  <dialog class="cg-dialog" id="newDlg">
+  <dialog class="ld-dialog" id="newDlg" aria-labelledby="newH">
     <form id="newForm" novalidate>
-      <h2>Log an incident</h2>
-      <div class="cg-field" id="nTitleF"><label for="nTitle">What happened?</label><input class="cg-in" id="nTitle" placeholder="e.g. Suspicious sign-in from a new country"><div class="err">Please describe the incident.</div></div>
-      <div class="cg-field"><label>Severity</label>
-        <div class="cg-seg" role="radiogroup" aria-label="Severity">
+      <h2 id="newH">Report incident</h2>
+      <div class="ld-field" id="nTitleF"><label for="nTitle">What happened?</label><input class="ld-input" id="nTitle" maxlength="200" placeholder="For example: sign-in from a new country" autocomplete="off"><div class="err">Describe the incident in a few words.</div></div>
+      <div class="ld-field"><span class="lbl" id="nSevL">Severity</span>
+        <div class="ld-seg" role="radiogroup" aria-labelledby="nSevL">
           <label><input type="radio" name="nSev" value="critical"><span>Critical</span></label>
           <label><input type="radio" name="nSev" value="high"><span>High</span></label>
           <label><input type="radio" name="nSev" value="medium" checked><span>Medium</span></label>
           <label><input type="radio" name="nSev" value="low"><span>Low</span></label>
         </div>
       </div>
-      <div class="cg-grid cg-g2" style="gap:14px">
-        <div class="cg-field"><label for="nHost">Affected host or account</label><input class="cg-in" id="nHost" placeholder="e.g. FIN-DB-SVR01"></div>
-        <div class="cg-field"><label for="nSrc">Detected by</label><select class="cg-sel" id="nSrc"><option>Manual report</option><option>Defender XDR</option><option>Azure Sentinel</option><option>CrowdStrike Falcon</option><option>Palo Alto NGFW</option></select></div>
+      <div class="ld-grid2">
+        <div class="ld-field"><label for="nHost">Device or account affected</label><input class="ld-input" id="nHost" placeholder="FIN-DB-SVR01" autocomplete="off"></div>
+        <div class="ld-field"><label for="nCat">Type</label><select class="ld-select" id="nCat"><option>Phishing</option><option>Malware or ransomware</option><option>Account compromise</option><option>Data loss</option><option>Lost or stolen device</option><option>Other</option></select></div>
       </div>
-      <div class="cg-field"><label for="nDesc">Details <span class="hint">optional</span></label><textarea class="cg-ta" id="nDesc" style="min-height:90px"></textarea></div>
-      <div class="cg-actions"><button class="cg-btn ghost" type="button" id="nCancel">Cancel</button><button class="cg-btn primary" type="submit" id="nGo">Log incident</button></div>
+      <div class="ld-field"><label for="nSrc">Detected by</label><select class="ld-select" id="nSrc"><option>Analyst</option><option>EDR</option><option>SIEM</option><option>Firewall</option><option>Email security</option><option>User report</option></select></div>
+      <div class="ld-field"><label for="nDesc">Details <span class="hint">(optional)</span></label><textarea class="ld-text" id="nDesc" maxlength="2000" style="min-height:90px"></textarea></div>
+      <div class="ld-actions"><button class="ld-btn quiet" type="button" id="nCancel">Cancel</button><button class="ld-btn primary" type="submit" id="nGo">Report incident</button></div>
     </form>
   </dialog>
 </div>

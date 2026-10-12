@@ -1,0 +1,46 @@
+{% comment %} Landasan Digital SOC Portal - Shift handover. Rows live in the Dataverse table cg_handover (see the page script and setup-portal-v4.ps1). {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
+      <div>
+        <h1>Shift handover</h1>
+        <p>What the next shift needs to know. Read the last handover when you start; write one before you leave.</p>
+        <p class="ld-source" id="hoSource">Loading…</p>
+      </div>
+      <div class="ld-actions"><a class="ld-btn primary" href="#write">Write handover</a></div>
+    </header>
+
+    <div class="ld-note" id="hoConn" hidden role="status"><div id="hoConnText"></div></div>
+
+    <section aria-labelledby="latestH">
+      <h2 class="ld-sr" id="latestH">Latest handover</h2>
+      <div id="latest" class="ld-ho"><p class="ld-muted">Loading…</p></div>
+    </section>
+
+    <div class="ld-cols wide ld-sec">
+      <section aria-labelledby="histH">
+        <div class="ld-sec-head"><h2 class="ld-h2" id="histH">Earlier handovers</h2><span class="ld-muted ld-small" id="hoCount"></span></div>
+        <div class="ld-acc" id="history"></div>
+      </section>
+
+      <section id="write" class="ld-anchor" aria-labelledby="writeH">
+        <h2 class="ld-h2" id="writeH" style="margin-bottom:16px">Write a handover</h2>
+        <form id="hoForm" novalidate>
+          <div class="ld-field"><span class="lbl" id="shiftL">Shift</span>
+            <div class="ld-seg" role="radiogroup" aria-labelledby="shiftL">
+              <label><input type="radio" name="hoShift" value="Day shift" checked><span>Day</span></label>
+              <label><input type="radio" name="hoShift" value="Night shift"><span>Night</span></label>
+              <label><input type="radio" name="hoShift" value="Weekend shift"><span>Weekend</span></label>
+            </div>
+          </div>
+          <div class="ld-field"><label for="hoTo">Handing over to</label><input class="ld-input" id="hoTo" maxlength="200" placeholder="Name or shift, for example: Night shift" autocomplete="off"></div>
+          <div class="ld-field" id="hoSumF"><label for="hoSum">What happened</label><textarea class="ld-text" id="hoSum" maxlength="4000" placeholder="The main things that happened on your shift"></textarea><div class="err">Write a short summary.</div></div>
+          <div class="ld-field"><div class="ld-labelrow"><label for="hoOpen">Still open</label><button class="ld-link ld-small" id="hoAddOpen" type="button">Add open incidents</button></div><textarea class="ld-text" id="hoOpen" maxlength="4000" placeholder="Incidents and tasks the next shift must pick up"></textarea></div>
+          <div class="ld-field"><label for="hoWatch">Keep an eye on</label><textarea class="ld-text" id="hoWatch" maxlength="4000" style="min-height:90px" placeholder="Changes, maintenance windows, things that may turn into incidents"></textarea></div>
+          <button class="ld-btn primary" type="submit" id="hoGo">Save handover</button>
+          <div class="ld-note ld-result" id="hoOk" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>

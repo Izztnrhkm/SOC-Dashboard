@@ -1,0 +1,176 @@
+{% comment %} Landasan Digital SOC Portal - Escalation: who to tell, legal deadlines in Malaysia, message templates. Edit the times to match your contracts. {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
+      <div>
+        <h1>Escalation</h1>
+        <p>Who to tell, by when, and what to send. If you are unsure, escalate: it is easier to stand down than to catch up.</p>
+      </div>
+      <div class="ld-actions"><a class="ld-btn" href="tel:+60355243133">Call +60 3-5524 3133</a></div>
+    </header>
+
+    <div class="ld-onpage">
+      <nav class="ld-toc" id="toc" aria-label="On this page">
+        <a href="#who">Who to tell</a>
+        <a href="#legal">Legal deadlines</a>
+        <a href="#templates">Message templates</a>
+      </nav>
+      <div>
+        <section id="who" class="ld-sec ld-anchor" aria-labelledby="whoH">
+          <h2 id="whoH">Who to tell</h2>
+          <p>Start the clock when the incident is confirmed, not when the alert fired.</p>
+          <div class="ld-tablewrap" style="margin-top:20px">
+            <table class="ld-table ld-esc stack">
+              <thead><tr><th scope="col">Severity</th><th scope="col">SOC lead</th><th scope="col">Our CISO</th><th scope="col">Client</th><th scope="col">How</th></tr></thead>
+              <tbody>
+                <tr><td class="bar critical"><span class="ld-sev critical">P1 Critical</span></td><td data-label="SOC lead">Now</td><td data-label="Our CISO">Now</td><td data-label="Client">Within 1 hour</td><td data-label="How">Call first, then the internal alert and a bridge</td></tr>
+                <tr><td class="bar high"><span class="ld-sev high">P2 High</span></td><td data-label="SOC lead">Within 30 minutes</td><td data-label="Our CISO">Within 4 hours</td><td data-label="Client">Within 4 hours</td><td data-label="How">Internal alert, then email</td></tr>
+                <tr><td class="bar medium"><span class="ld-sev medium">P3 Medium</span></td><td data-label="SOC lead">At shift handover</td><td data-label="Our CISO">Weekly summary</td><td data-label="Client">Next working day</td><td data-label="How">Ticket update or email</td></tr>
+                <tr><td class="bar low"><span class="ld-sev low">P4 Low</span></td><td data-label="SOC lead">Weekly summary</td><td data-label="Our CISO">Not needed</td><td data-label="Client">Weekly summary</td><td data-label="How">Weekly report</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="ld-muted ld-small" style="margin-top:12px">Client times can be shorter in a contract. The contract always wins.</p>
+        </section>
+
+        <section id="legal" class="ld-sec ld-anchor" aria-labelledby="legalH">
+          <h2 id="legalH">Legal deadlines in Malaysia</h2>
+          <p>These apply to the organisation that owns the data or system, usually the client. Make sure the client knows in time to meet them, and involve their DPO or legal team.</p>
+          <div class="ld-cols even" style="margin-top:24px;gap:40px">
+            <div class="ld-law">
+              <h3>Personal data breach</h3>
+              <p class="ld-muted ld-small">Personal Data Protection Act 2010, as amended. Since 1 June 2025.</p>
+              <dl>
+                <dt>72 hours</dt><dd>Notify the Personal Data Protection Commissioner, counted from when the breach is known, if it is likely to cause significant harm or affects more than 1,000 people.</dd>
+                <dt>7 days</dt><dd>Within 7 days of notifying the Commissioner, notify the affected people if the breach is likely to cause them significant harm.</dd>
+              </dl>
+              <p class="ld-small">Significant harm includes financial loss, identity fraud, misuse for illegal purposes, physical harm, or sensitive personal data being exposed.</p>
+            </div>
+            <div class="ld-law">
+              <h3>National critical infrastructure (NCII)</h3>
+              <p class="ld-muted ld-small">Cyber Security Act 2024 and its notification regulations.</p>
+              <dl>
+                <dt>Immediately</dt><dd>Notify NACSA and the sector lead when an incident is found.</dd>
+                <dt>6 hours</dt><dd>Send the first report with the incident details.</dd>
+                <dt>14 days</dt><dd>Send the full report: scope, impact, cause and actions.</dd>
+              </dl>
+              <p class="ld-small">Only for clients designated as NCII entities.</p>
+            </div>
+          </div>
+          <p class="ld-muted ld-small" style="margin-top:16px">A summary for the SOC, not legal advice. Check with legal before any notice is sent.</p>
+        </section>
+
+        <section id="templates" class="ld-sec ld-anchor" aria-labelledby="tplH">
+          <h2 id="tplH">Message templates</h2>
+          <p>Copy, fill in the parts in square brackets, and send. Keep it factual.</p>
+          <div class="ld-acc" style="margin-top:16px">
+          <details id="tpl-internal" class="ld-anchor"><summary><span class="q">Internal alert (Teams or chat)<small>Send to the SOC channel the moment a P1 or P2 is confirmed.</small></span></summary><div class="ans">
+            <div class="ld-tpl"><pre>[P1/P2] [INC reference]: [one-line title]
+What: [what we see, in one sentence]
+Affected: [hosts / accounts / client]
+Status: [investigating / contained]
+Lead: [name]  Bridge: [link or number]
+Next update: [time]</pre><button class="ld-btn sm" type="button" data-copy="[P1/P2] [INC reference]: [one-line title]
+What: [what we see, in one sentence]
+Affected: [hosts / accounts / client]
+Status: [investigating / contained]
+Lead: [name]  Bridge: [link or number]
+Next update: [time]">Copy message</button></div>
+          </div></details>
+          <details id="tpl-client" class="ld-anchor"><summary><span class="q">First notice to the client (email)<small>Send within the time on the table above. Facts only; no guesses about cause.</small></span></summary><div class="ans">
+            <div class="ld-tpl"><pre>Subject: [Client name] security incident [INC reference]: initial notice
+
+Hello [name],
+
+At [time, date] our SOC detected [short description] affecting [systems or accounts].
+
+What we have done so far:
+- [action 1]
+- [action 2]
+
+What we need from you:
+- [request, or &quot;Nothing at this time&quot;]
+
+Current severity: [P1/P2].
+We will update you by [time]. For anything urgent, call our 24/7 hotline on +60 3-5524 3133.
+
+[Your name]
+Landasan Digital SOC</pre><button class="ld-btn sm" type="button" data-copy="Subject: [Client name] security incident [INC reference]: initial notice
+
+Hello [name],
+
+At [time, date] our SOC detected [short description] affecting [systems or accounts].
+
+What we have done so far:
+- [action 1]
+- [action 2]
+
+What we need from you:
+- [request, or &quot;Nothing at this time&quot;]
+
+Current severity: [P1/P2].
+We will update you by [time]. For anything urgent, call our 24/7 hotline on +60 3-5524 3133.
+
+[Your name]
+Landasan Digital SOC">Copy message</button></div>
+          </div></details>
+          <details id="tpl-update" class="ld-anchor"><summary><span class="q">Update to the client<small>Send at the time you promised, even if there is no change.</small></span></summary><div class="ans">
+            <div class="ld-tpl"><pre>Subject: [Client name] security incident [INC reference]: update [number]
+
+Hello [name],
+
+Since our last update at [time]:
+- [what changed]
+
+Current status: [investigating / contained / recovering].
+Next update: [time].
+
+[Your name]
+Landasan Digital SOC</pre><button class="ld-btn sm" type="button" data-copy="Subject: [Client name] security incident [INC reference]: update [number]
+
+Hello [name],
+
+Since our last update at [time]:
+- [what changed]
+
+Current status: [investigating / contained / recovering].
+Next update: [time].
+
+[Your name]
+Landasan Digital SOC">Copy message</button></div>
+          </div></details>
+          <details id="tpl-close" class="ld-anchor"><summary><span class="q">Closure notice<small>Send when the incident is resolved. Attach or promise the root cause report.</small></span></summary><div class="ans">
+            <div class="ld-tpl"><pre>Subject: [Client name] security incident [INC reference]: resolved
+
+Hello [name],
+
+The incident reported on [date] is resolved as of [time, date].
+
+Cause: [root cause, one or two sentences]
+Impact: [what was affected, and for how long]
+Actions taken: [summary]
+Follow-up: [recommendations, and when the full report will arrive]
+
+Thank you for your help.
+[Your name]
+Landasan Digital SOC</pre><button class="ld-btn sm" type="button" data-copy="Subject: [Client name] security incident [INC reference]: resolved
+
+Hello [name],
+
+The incident reported on [date] is resolved as of [time, date].
+
+Cause: [root cause, one or two sentences]
+Impact: [what was affected, and for how long]
+Actions taken: [summary]
+Follow-up: [recommendations, and when the full report will arrive]
+
+Thank you for your help.
+[Your name]
+Landasan Digital SOC">Copy message</button></div>
+          </div></details>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
