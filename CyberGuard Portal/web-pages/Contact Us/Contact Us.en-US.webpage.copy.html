@@ -1,53 +1,45 @@
-{% comment %} CyberGuard — Contact. Messages are saved to the Dataverse table cg_contactmessage through the Web API (anonymous create permission). {% endcomment %}
-<div class="cg">
-  <div class="cg-wrap cg-page">
-    <nav class="cg-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Contact</span></nav>
-    <header class="cg-head">
-      <span class="cg-eyebrow">Contact</span>
-      <h1 class="cg-h1">Reach the security team.</h1>
-      <p class="cg-lead" style="margin-top:6px">For anything urgent, call. For everything else, send a message and we will reply by email.</p>
+{% comment %} Landasan Digital SOC Portal - Contact. Messages are saved to the Dataverse table cg_contactmessage through the Web API. {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
+      <div>
+        <h1>Contact the SOC</h1>
+        <p>Call for anything urgent. For everything else, send a message and we’ll reply by email.</p>
+      </div>
     </header>
 
-    <div class="cg-split-2" style="grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)">
-      <div>
-        <div class="cg-notice alert" style="margin-bottom:20px">
-          <span aria-hidden="true">●</span>
-          <div><strong>Active breach (P1/P2)?</strong> Call the hotline now: <a href="tel:+18005552923"><strong>+1 (800) 555-2923</strong></a>. Do not wait for an email reply.</div>
-        </div>
-        <div class="cg-card">
-          <dl class="cg-dl" style="margin:0">
-            <dt>Hotline</dt><dd>+1 (800) 555-2923<br><span class="cg-muted">Secure line: +1 (202) 555-0199</span></dd>
-            <dt>Email</dt><dd><a href="mailto:soc-dispatch@cyberguard.sec">soc-dispatch@cyberguard.sec</a><br><span class="cg-muted">PGP key ID <span class="cg-mono">0x9E4B21F8A4</span></span></dd>
-            <dt>Americas</dt><dd>Reston, VA</dd>
-            <dt>EMEA</dt><dd>London, UK</dd>
-            <dt>APAC</dt><dd>Singapore</dd>
-            <dt>Vulnerabilities</dt><dd>Reviewed within 2 hours by AppSec and Red Team engineers.</dd>
-          </dl>
-        </div>
-        <p class="cg-muted" style="font-size:14px;margin-top:14px">Typical reply time: under 4 working hours.</p>
+    <div class="ld-cols form">
+      <div class="ld-contact">
+        <div class="ld-note warn"><div><b>Active breach or ransomware?</b> Call now. Don’t wait for an email reply.</div></div>
+        <p class="ld-muted ld-small">24/7 hotline</p>
+        <p class="hot"><a href="tel:+60355243133">+60 3-5524 3133</a></p>
+        <dl style="margin-top:28px">
+          <dt>Email</dt><dd><a href="mailto:enquiry@landasandigital.com">enquiry@landasandigital.com</a></dd>
+          <dt>Office</dt><dd>126 Block, Persiaran Sukan, 4, Persiaran Laman Seri Business Park, Seksyen 13, 40100 Shah Alam, Selangor</dd>
+        </dl>
       </div>
 
-      <form class="cg-card" id="contactForm" novalidate>
-        <h2 class="cg-h2" style="margin-bottom:18px">Send a message</h2>
-        <div class="cg-grid cg-g2" style="gap:14px">
-          <div class="cg-field"><label for="cName">Name</label><input class="cg-in" id="cName" autocomplete="name"><div class="err">Please enter your name.</div></div>
-          <div class="cg-field"><label for="cEmail">Work email</label><input class="cg-in" id="cEmail" type="email" autocomplete="email"><div class="err">Please enter a valid email address.</div></div>
+      <form id="contactForm" novalidate aria-labelledby="msgH">
+        <h2 class="ld-h2" id="msgH" style="margin-bottom:20px">Send a message</h2>
+        <div class="ld-grid2">
+          <div class="ld-field"><label for="cName">Name</label><input class="ld-input" id="cName" autocomplete="name"><div class="err">Enter your name.</div></div>
+          <div class="ld-field"><label for="cEmail">Work email</label><input class="ld-input" id="cEmail" type="email" autocomplete="email"><div class="err">Enter an email address like name@landasandigital.com.</div></div>
         </div>
-        <div class="cg-field">
+        <div class="ld-field">
           <label for="cTopic">Topic</label>
-          <select class="cg-sel" id="cTopic">
+          <select class="ld-select" id="cTopic">
+            <option>General question</option>
             <option>Suspicious email or phishing</option>
             <option>Device quarantined by EDR</option>
+            <option>Dashboard access</option>
+            <option>Report request</option>
             <option>Vulnerability disclosure</option>
             <option>Threat intelligence sharing</option>
-            <option>Report request</option>
-            <option>Dashboard access</option>
-            <option>General question</option>
           </select>
         </div>
-        <div class="cg-field"><label for="cMsg">Message <span class="hint">— include hostnames or indicators if you have them</span></label><textarea class="cg-ta" id="cMsg" maxlength="2000"></textarea><div class="err">Please write a short message.</div><div class="hint" style="text-align:right;font-size:13px;color:var(--muted)"><span id="cCount">0</span> / 2000</div></div>
-        <button class="cg-btn primary" type="submit" id="cGo" style="width:100%">Send message</button>
-        <div class="cg-ok" id="contactOk" role="status" aria-live="polite"></div>
+        <div class="ld-field"><label for="cMsg">Message <span class="hint">(add host names or indicators if you have them)</span></label><textarea class="ld-text" id="cMsg" maxlength="2000" aria-describedby="cCount"></textarea><div class="err">Write a short message.</div><div class="count"><span id="cCount">0</span> / 2000</div></div>
+        <button class="ld-btn primary" type="submit" id="cGo">Send message</button>
+        <div class="ld-note ld-result" id="contactOk" role="status" aria-live="polite"></div>
       </form>
     </div>
   </div>

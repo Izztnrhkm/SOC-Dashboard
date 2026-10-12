@@ -1,125 +1,98 @@
-{% comment %} CyberGuard — Incident response. The report form creates a row in Dataverse (cg_incident) through the Web API; without it the report is kept on this device. {% endcomment %}
-<div class="cg">
-  <div class="cg-wrap cg-page">
-    <nav class="cg-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Incident response</span></nav>
-    <header class="cg-head cg-row" style="align-items:flex-end">
+{% comment %} Landasan Digital SOC Portal - Incident response: severity levels, response steps, links to playbooks and escalation, and the report form (creates a row in Dataverse cg_incident through the Web API). {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
       <div>
-        <span class="cg-eyebrow">Incident response</span>
-        <h1 class="cg-h1">What to do when something goes wrong.</h1>
-        <p class="cg-lead" style="margin-top:6px">Severity levels, the response lifecycle and step-by-step playbooks you can tick off as you go.</p>
+        <h1>Incident response</h1>
+        <p>How we rate incidents, the steps we follow, and the form to report one.</p>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <a class="cg-btn ghost" href="tel:+18005552923">Call hotline</a>
-        <a class="cg-btn danger" href="#report">Report an incident</a>
+      <div class="ld-actions">
+        <a class="ld-btn" href="tel:+60355243133">Call +60 3-5524 3133</a>
+        <a class="ld-btn primary" href="#report">Report incident</a>
       </div>
     </header>
 
-    <nav class="cg-pagenav" id="pageNav" aria-label="On this page">
-      <a href="#severity">Severity</a><a href="#lifecycle">Lifecycle</a><a href="#playbooks">Playbooks</a><a href="#report">Report</a>
-    </nav>
+    <div class="ld-onpage">
+      <nav class="ld-toc" id="toc" aria-label="On this page">
+        <a href="#severity">Severity levels</a>
+        <a href="#lifecycle">Response steps</a>
+        <a href="#next">Playbooks and escalation</a>
+        <a href="#report">Report an incident</a>
+      </nav>
 
-    <section id="severity" class="cg-scroll">
-      <h2 class="cg-h2">Severity levels</h2>
-      <p class="cg-sub" style="margin-bottom:18px">Pick the highest level that fits. When unsure, go higher. Click a row to pre-select it in the report form.</p>
-      <div class="cg-card" style="padding:0;overflow:hidden">
-        <div class="cg-sev-row head"><span>Level</span><span>Response</span><span>What it means</span><span>Examples</span></div>
-        <div class="cg-sev-row" data-pick="critical" style="cursor:pointer"><span><span class="cg-badge critical">P1 Critical</span></span><strong>15 min</strong><span>Active, uncontained breach hitting core operations or customer data.</span><span class="cg-muted">Ransomware encrypting, domain controller compromised, command-and-control on a payment server.</span></div>
-        <div class="cg-sev-row" data-pick="high" style="cursor:pointer"><span><span class="cg-badge high">P2 High</span></span><strong>30 min</strong><span>Severe risk: privileged account compromise or lateral movement.</span><span class="cg-muted">Credential dump, password spray on admin portal, rogue scheduled task.</span></div>
-        <div class="cg-sev-row" data-pick="medium" style="cursor:pointer"><span><span class="cg-badge medium">P3 Medium</span></span><strong>2 hours</strong><span>Moderate risk, usually contained.</span><span class="cg-muted">Adware on an endpoint, suspicious PowerShell blocked by AMSI.</span></div>
-        <div class="cg-sev-row" data-pick="low" style="cursor:pointer"><span><span class="cg-badge low">P4 Low</span></span><strong>8 hours</strong><span>Informational or minor anomaly.</span><span class="cg-muted">Port scan on the edge, unpatched non-critical CVE.</span></div>
-      </div>
-    </section>
-
-    <section id="lifecycle" class="cg-section cg-scroll">
-      <h2 class="cg-h2">Response lifecycle</h2>
-      <p class="cg-sub" style="margin-bottom:18px">Based on NIST SP 800-61.</p>
-      <div class="cg-steps">
-        <div><b>Prepare</b><span>Hardened sensors, baselined telemetry, offline backups.</span></div>
-        <div><b>Detect &amp; triage</b><span>Correlate alerts, map the technique, set severity and scope.</span></div>
-        <div><b>Contain</b><span>Isolate hosts, revoke sessions, block bad indicators.</span></div>
-        <div><b>Eradicate &amp; recover</b><span>Remove persistence, rebuild from known-good, restore service.</span></div>
-        <div><b>Learn</b><span>Root cause review within five days; update detections and playbooks.</span></div>
-      </div>
-    </section>
-
-    <section id="playbooks" class="cg-section cg-scroll">
-      <div class="cg-section-head">
-        <div><h2 class="cg-h2">Playbooks</h2><p class="cg-sub">Tick steps off as you go. Your progress is kept on this device.</p></div>
-        <div style="display:flex;gap:8px"><button class="cg-btn ghost sm" type="button" id="pbOpen">Expand all</button><button class="cg-btn ghost sm" type="button" id="pbClose">Collapse all</button></div>
-      </div>
-      <div id="pbList">
-        <details class="cg-card cg-pb" id="pb-ransomware" data-pb="ransomware" data-total="6">
-          <summary><span class="cg-badge critical">P1</span><span class="t"><b>Ransomware and lateral movement</b><span>Pre-execution, shadow copy deletion or active encryption</span></span><span class="pg"><small><span class="pgn">0</span> of 6 done</small><div class="cg-progress"><i style="width:0"></i></div></span></summary>
-          <div class="body">
-            <div class="cg-check"><input type="checkbox" id="ransomware0" data-k="ransomware0"><div><label for="ransomware0" style="cursor:pointer;margin:0"><b>1. Isolate the host from the network</b></label><span>Cut off SMB, WMI and WinRM movement while keeping sensor telemetry flowing.</span><div class="cg-cmd"><code>Invoke-EDRIsolation -Host FIN-DB-SVR01 -EnforceMode StrictlyIsolated</code><button type="button" data-copy="Invoke-EDRIsolation -Host FIN-DB-SVR01 -EnforceMode StrictlyIsolated">Copy</button></div></div></div>
-            <div class="cg-check"><input type="checkbox" id="ransomware1" data-k="ransomware1"><div><label for="ransomware1" style="cursor:pointer;margin:0"><b>2. Capture memory, then stop the beacon</b></label><span>Dump volatile memory of injected processes (rundll32, dllhost, powershell) before terminating them.</span><div class="cg-cmd"><code>Dump-VolatileMemory -PID 4192 -Destination \\forensics-vault\evidence\</code><button type="button" data-copy="Dump-VolatileMemory -PID 4192 -Destination \\forensics-vault\evidence\">Copy</button></div></div></div>
-            <div class="cg-check"><input type="checkbox" id="ransomware2" data-k="ransomware2"><div><label for="ransomware2" style="cursor:pointer;margin:0"><b>3. Do not power off or reboot</b></label><span>Powering down destroys the memory artifacts needed for decryption keys and attribution.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="ransomware3" data-k="ransomware3"><div><label for="ransomware3" style="cursor:pointer;margin:0"><b>4. Protect backups</b></label><span>Confirm backup repositories were not touched. Lock the storage bucket read-only.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="ransomware4" data-k="ransomware4"><div><label for="ransomware4" style="cursor:pointer;margin:0"><b>5. Block the indicators</b></label><span>Push C2 IPs, domains and hashes to the firewall and EDR blocklists.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="ransomware5" data-k="ransomware5"><div><label for="ransomware5" style="cursor:pointer;margin:0"><b>6. Notify and escalate</b></label><span>Call the hotline, brief the CISO and open a P1 bridge.</span></div></div>
-            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="cg-btn ghost sm" type="button" data-reset="ransomware">Reset checklist</button><button class="cg-btn ghost sm" type="button" data-print>Print</button></div>
+      <div>
+        <section id="severity" class="ld-sec ld-anchor" aria-labelledby="sevH">
+          <h2 id="sevH">Severity levels</h2>
+          <p>Pick the highest level that fits. If you are unsure, pick the higher one.</p>
+          <div class="ld-tablewrap" style="margin-top:20px">
+            <table class="ld-table ld-sevtable stack">
+              <thead><tr><th scope="col">Level</th><th scope="col">Respond within</th><th scope="col">What it means</th><th scope="col">Examples</th></tr></thead>
+              <tbody>
+                <tr><td class="bar critical"><span class="ld-sev critical">P1 Critical</span></td><td data-label="Respond within">15 minutes</td><td>An active breach that is not contained and hits core systems or customer data.</td><td class="ld-muted" data-label="Examples">Files being encrypted, domain controller taken over, attacker control of a payment server.</td></tr>
+                <tr><td class="bar high"><span class="ld-sev high">P2 High</span></td><td data-label="Respond within">30 minutes</td><td>Serious risk, such as a privileged account taken over or an attacker moving between systems.</td><td class="ld-muted" data-label="Examples">Password dumping, password spray on admin accounts, a rogue scheduled task.</td></tr>
+                <tr><td class="bar medium"><span class="ld-sev medium">P3 Medium</span></td><td data-label="Respond within">2 hours</td><td>Moderate risk, usually already contained.</td><td class="ld-muted" data-label="Examples">Adware on a laptop, a suspicious script blocked by antivirus.</td></tr>
+                <tr><td class="bar low"><span class="ld-sev low">P4 Low</span></td><td data-label="Respond within">8 hours</td><td>Informational or a minor anomaly.</td><td class="ld-muted" data-label="Examples">A port scan at the edge, a low-risk missing patch.</td></tr>
+              </tbody>
+            </table>
           </div>
-        </details>
-        <details class="cg-card cg-pb" id="pb-bec" data-pb="bec" data-total="5">
-          <summary><span class="cg-badge high">P2</span><span class="t"><b>Business email compromise and identity takeover</b><span>Hijacked M365 or Entra ID account, rogue forwarding rules</span></span><span class="pg"><small><span class="pgn">0</span> of 5 done</small><div class="cg-progress"><i style="width:0"></i></div></span></summary>
-          <div class="body">
-            <div class="cg-check"><input type="checkbox" id="bec0" data-k="bec0"><div><label for="bec0" style="cursor:pointer;margin:0"><b>1. Revoke all sessions and refresh tokens</b></label><span>Sign the user out everywhere.</span><div class="cg-cmd"><code>Revoke-AzureADUserAllRefreshToken -ObjectId &quot;user-guid&quot;</code><button type="button" data-copy="Revoke-AzureADUserAllRefreshToken -ObjectId &quot;user-guid&quot;">Copy</button></div></div></div>
-            <div class="cg-check"><input type="checkbox" id="bec1" data-k="bec1"><div><label for="bec1" style="cursor:pointer;margin:0"><b>2. Reset the password and require MFA re-registration</b></label><span>Do this after sessions are revoked, not before.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="bec2" data-k="bec2"><div><label for="bec2" style="cursor:pointer;margin:0"><b>3. Find and remove hidden inbox rules</b></label><span>Attackers often add rules that forward or hide replies.</span><div class="cg-cmd"><code>Get-InboxRule -Mailbox user@cyberguard.sec | Remove-InboxRule</code><button type="button" data-copy="Get-InboxRule -Mailbox user@cyberguard.sec | Remove-InboxRule">Copy</button></div></div></div>
-            <div class="cg-check"><input type="checkbox" id="bec3" data-k="bec3"><div><label for="bec3" style="cursor:pointer;margin:0"><b>4. Review OAuth consents and sign-in logs</b></label><span>Remove unknown app consents and note the attacker IP addresses.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="bec4" data-k="bec4"><div><label for="bec4" style="cursor:pointer;margin:0"><b>5. Warn finance and affected partners</b></label><span>Treat any recent payment-detail change as suspect until verified by phone.</span></div></div>
-            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="cg-btn ghost sm" type="button" data-reset="bec">Reset checklist</button><button class="cg-btn ghost sm" type="button" data-print>Print</button></div>
-          </div>
-        </details>
-        <details class="cg-card cg-pb" id="pb-phishing" data-pb="phishing" data-total="5">
-          <summary><span class="cg-badge medium">P3</span><span class="t"><b>Phishing email reported by a user</b><span>Link clicked, attachment opened or credentials entered</span></span><span class="pg"><small><span class="pgn">0</span> of 5 done</small><div class="cg-progress"><i style="width:0"></i></div></span></summary>
-          <div class="body">
-            <div class="cg-check"><input type="checkbox" id="phishing0" data-k="phishing0"><div><label for="phishing0" style="cursor:pointer;margin:0"><b>1. Get the original message</b></label><span>Ask for the .eml or .msg file. Forwarding strips the headers we need.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="phishing1" data-k="phishing1"><div><label for="phishing1" style="cursor:pointer;margin:0"><b>2. Search and purge from all mailboxes</b></label><span>Find every copy by sender or subject and soft-delete it.</span><div class="cg-cmd"><code>New-ComplianceSearch -Name PhishPurge -ExchangeLocation All -ContentMatchQuery 'from:bad@example.com'</code><button type="button" data-copy="New-ComplianceSearch -Name PhishPurge -ExchangeLocation All -ContentMatchQuery 'from:bad@example.com'">Copy</button></div></div></div>
-            <div class="cg-check"><input type="checkbox" id="phishing2" data-k="phishing2"><div><label for="phishing2" style="cursor:pointer;margin:0"><b>3. Block the sender, URL and attachment hash</b></label><span>Add them to Defender for Office 365 and the web proxy.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="phishing3" data-k="phishing3"><div><label for="phishing3" style="cursor:pointer;margin:0"><b>4. Check who clicked</b></label><span>Use URL click traces and sign-in logs. Treat clickers as possibly compromised.</span></div></div>
-            <div class="cg-check"><input type="checkbox" id="phishing4" data-k="phishing4"><div><label for="phishing4" style="cursor:pointer;margin:0"><b>5. Reset credentials where entered</b></label><span>Follow the identity takeover playbook if anyone submitted a password.</span></div></div>
-            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="cg-btn ghost sm" type="button" data-reset="phishing">Reset checklist</button><button class="cg-btn ghost sm" type="button" data-print>Print</button></div>
-          </div>
-        </details>
-      </div>
-    </section>
+        </section>
 
-    <section id="report" class="cg-section cg-scroll">
-      <div class="cg-split-2">
-        <div>
-          <h2 class="cg-h2">Report an incident</h2>
-          <p class="cg-sub" style="margin-bottom:18px">For P1 or P2, call <strong>+1 (800) 555-2923</strong> first, then fill this in so the SOC has the details.</p>
-          <form class="cg-card" id="irForm" novalidate>
-            <div class="cg-field"><label for="irTitle">What happened? <span class="hint">(required)</span></label><input class="cg-in" id="irTitle" maxlength="200" placeholder="e.g. Ransom note on finance laptop" autocomplete="off"><div class="err">Please describe what happened in a few words.</div></div>
-            <div class="cg-field"><label id="irSevL">Severity</label>
-              <div class="cg-seg" role="radiogroup" aria-labelledby="irSevL">
-                <label><input type="radio" name="irSev" value="critical"><span>P1 Critical</span></label>
-                <label><input type="radio" name="irSev" value="high"><span>P2 High</span></label>
-                <label><input type="radio" name="irSev" value="medium" checked><span>P3 Medium</span></label>
-                <label><input type="radio" name="irSev" value="low"><span>P4 Low</span></label>
-              </div>
-            </div>
-            <div class="cg-grid cg-g2" style="gap:14px">
-              <div class="cg-field"><label for="irHost">Affected host or account</label><input class="cg-in" id="irHost" placeholder="e.g. FIN-LT-042" autocomplete="off"></div>
-              <div class="cg-field"><label for="irCat">Type</label><select class="cg-sel" id="irCat"><option>Phishing</option><option>Malware / ransomware</option><option>Account compromise</option><option>Data loss</option><option>Lost or stolen device</option><option>Other</option></select></div>
-            </div>
-            <div class="cg-field"><label for="irDesc">Details <span class="hint">— what you saw, when, anything you already did</span></label><textarea class="cg-ta" id="irDesc" maxlength="2000"></textarea></div>
-            <button class="cg-btn primary" type="submit" id="irGo">Submit report</button>
-            <div class="cg-ok" id="irOk" role="status" aria-live="polite"></div>
-          </form>
-        </div>
-        <aside class="cg-card" style="background:var(--surface)">
-          <h3 class="cg-h3">While you wait</h3>
-          <ul style="margin:12px 0 0 18px;padding:0;color:var(--text-2);line-height:1.8">
-            <li>Do not turn the device off.</li>
-            <li>Disconnect it from the network (cable or Wi-Fi).</li>
-            <li>Do not delete anything, including the suspicious email.</li>
-            <li>Write down what you clicked and when.</li>
+        <section id="lifecycle" class="ld-sec ld-anchor" aria-labelledby="lcH">
+          <h2 id="lcH">Response steps</h2>
+          <p>Every incident goes through these steps, based on NIST SP 800-61 Rev. 2.</p>
+          <ol class="ld-steps">
+            <li><b>Prepare</b><span>Sensors in place, normal activity known, backups kept offline.</span></li>
+            <li><b>Detect and triage</b><span>Confirm the alert, set the severity and work out the scope.</span></li>
+            <li><b>Contain</b><span>Isolate hosts, revoke sessions, block what is bad.</span></li>
+            <li><b>Remove and recover</b><span>Clear persistence, rebuild from known-good, restore service.</span></li>
+            <li><b>Learn</b><span>Review the root cause within five working days and update detections.</span></li>
+          </ol>
+        </section>
+
+        <section id="next" class="ld-sec ld-anchor" aria-labelledby="nextH">
+          <h2 id="nextH">Playbooks and escalation</h2>
+          <p>Checklists for each type of incident, and who to tell by when.</p>
+          <ul class="ld-links" style="margin-top:16px">
+            <li><a href="/playbooks/">Playbooks<small>Ransomware, email takeover, phishing, malware, suspicious sign-in, lost device, data leak, exploited system</small></a></li>
+            <li><a href="/escalation/">Escalation and message templates<small>Who to tell, legal deadlines in Malaysia, ready-to-send messages</small></a></li>
           </ul>
-          <p class="cg-muted" style="font-size:14px;margin-top:16px">You will get a reference such as <span class="cg-mono">INC-2026-8950</span> to quote on the phone.</p>
-        </aside>
+        </section>
+
+        <section id="report" class="ld-sec ld-anchor" aria-labelledby="repH">
+          <h2 id="repH">Report an incident</h2>
+          <p>For P1 or P2, call <a href="tel:+60355243133">+60 3-5524 3133</a> first, then fill this in so the SOC has the details.</p>
+          <div class="ld-cols wide" style="margin-top:28px">
+            <form id="irForm" novalidate>
+              <div class="ld-field"><label for="irTitle">What happened?</label><input class="ld-input" id="irTitle" maxlength="200" placeholder="For example: ransom note on a finance laptop" autocomplete="off"><div class="err">Describe what happened in a few words.</div></div>
+              <div class="ld-field"><span class="lbl" id="irSevL">Severity</span>
+                <div class="ld-seg" role="radiogroup" aria-labelledby="irSevL">
+                  <label><input type="radio" name="irSev" value="critical"><span>P1 Critical</span></label>
+                  <label><input type="radio" name="irSev" value="high"><span>P2 High</span></label>
+                  <label><input type="radio" name="irSev" value="medium" checked><span>P3 Medium</span></label>
+                  <label><input type="radio" name="irSev" value="low"><span>P4 Low</span></label>
+                </div>
+              </div>
+              <div class="ld-grid2">
+                <div class="ld-field"><label for="irHost">Device or account affected</label><input class="ld-input" id="irHost" placeholder="FIN-LT-042" autocomplete="off"></div>
+                <div class="ld-field"><label for="irCat">Type</label><select class="ld-select" id="irCat"><option>Phishing</option><option>Malware or ransomware</option><option>Account compromise</option><option>Data loss</option><option>Lost or stolen device</option><option>Other</option></select></div>
+              </div>
+              <div class="ld-field"><label for="irDesc">Details <span class="hint">(what you saw, when, and anything you already did)</span></label><textarea class="ld-text" id="irDesc" maxlength="2000"></textarea></div>
+              <button class="ld-btn primary" type="submit" id="irGo">Report incident</button>
+              <div class="ld-note ld-result" id="irOk" role="status" aria-live="polite"></div>
+            </form>
+            <aside class="ld-aside" aria-labelledby="waitH">
+              <h2 id="waitH">While you wait</h2>
+              <ol>
+                <li>Leave the device switched on.</li>
+                <li>Disconnect it from the network (cable or Wi-Fi).</li>
+                <li>Don’t delete anything, including the suspicious email.</li>
+                <li>Write down what you clicked and when.</li>
+              </ol>
+              <p>You’ll get a reference like INC-2026-8950 to quote if you call.</p>
+            </aside>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   </div>
 </div>

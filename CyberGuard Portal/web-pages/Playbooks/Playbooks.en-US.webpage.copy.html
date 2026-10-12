@@ -1,0 +1,89 @@
+{% comment %} Landasan Digital SOC Portal - Playbooks. Static checklists; ticks are kept in this browser. Edit the steps here. {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
+      <div>
+        <h1>Playbooks</h1>
+        <p>Step-by-step checklists for the incidents we see most. Tick steps off as you go; ticks are saved in this browser only.</p>
+      </div>
+      <div class="ld-actions"><a class="ld-btn" href="/escalation/">Escalation</a><a class="ld-btn primary" href="/incident-response/#report">Report incident</a></div>
+    </header>
+    <div class="ld-toolbar">
+      <div class="ld-search grow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="ld-sr" for="pbQ">Search playbooks</label>
+        <input class="ld-input" id="pbQ" type="search" placeholder="Search, for example: phishing" autocomplete="off">
+      </div>
+      <div class="ld-topics" id="pbSev" role="group" aria-label="Severity" style="margin:0">
+        <button type="button" data-sev="all" aria-pressed="true">All</button>
+        <button type="button" data-sev="critical" aria-pressed="false">P1</button>
+        <button type="button" data-sev="high" aria-pressed="false">P2</button>
+        <button type="button" data-sev="medium" aria-pressed="false">P3</button>
+      </div>
+      <button class="ld-link ld-small" type="button" id="pbAll">Open all</button>
+    </div>
+    <div class="ld-acc" id="pbList">
+      <details class="ld-pb ld-anchor" id="pb-ransomware" data-pb="ransomware" data-sev="critical">
+        <summary><span class="ld-sev critical">P1</span><span class="q">Ransomware or attacker moving between systems<small>Encryption started, shadow copies deleted, or an implant found</small></span><span class="done"><span class="pgn">0</span> of 6 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="ransomware0" data-k="ransomware0"><div><label for="ransomware0">Isolate the host from the network</label><p>Use the network isolation action in the EDR console. It stops SMB, WMI and WinRM traffic but keeps the sensor connected.</p></div></div><div class="ld-check"><input type="checkbox" id="ransomware1" data-k="ransomware1"><div><label for="ransomware1">Capture memory, then stop the process</label><p>Collect a memory image of the host (EDR live response or your forensic tool) before you end injected processes such as rundll32, dllhost or powershell.</p></div></div><div class="ld-check"><input type="checkbox" id="ransomware2" data-k="ransomware2"><div><label for="ransomware2">Do not switch it off or restart it</label><p>Turning it off destroys the memory evidence needed for keys and attribution.</p></div></div><div class="ld-check"><input type="checkbox" id="ransomware3" data-k="ransomware3"><div><label for="ransomware3">Protect the backups</label><p>Check the backup stores were not touched, then make them read-only.</p></div></div><div class="ld-check"><input type="checkbox" id="ransomware4" data-k="ransomware4"><div><label for="ransomware4">Block the indicators</label><p>Add the attacker addresses, domains and file hashes to the watchlist, then to the firewall and EDR block lists.</p></div></div><div class="ld-check"><input type="checkbox" id="ransomware5" data-k="ransomware5"><div><label for="ransomware5">Escalate</label><p>Call the hotline, brief the CISO and open a P1 bridge. Follow the escalation page for client and legal notices.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="ransomware">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+      <details class="ld-pb ld-anchor" id="pb-bec" data-pb="bec" data-sev="high">
+        <summary><span class="ld-sev high">P2</span><span class="q">Email account taken over<small>Hijacked Microsoft 365 account, unknown forwarding rules</small></span><span class="done"><span class="pgn">0</span> of 6 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="bec0" data-k="bec0"><div><label for="bec0">Block sign-in and reset the password</label><p>Do this first, so the attacker cannot simply sign in again.</p><div class="ld-cmd"><code>Update-MgUser -UserId user@client.example -AccountEnabled:$false</code><button type="button" data-copy="Update-MgUser -UserId user@client.example -AccountEnabled:$false">Copy</button></div></div></div><div class="ld-check"><input type="checkbox" id="bec1" data-k="bec1"><div><label for="bec1">Sign the user out everywhere</label><p>Revoke all sessions and refresh tokens.</p><div class="ld-cmd"><code>Revoke-MgUserSignInSession -UserId user@client.example</code><button type="button" data-copy="Revoke-MgUserSignInSession -UserId user@client.example">Copy</button></div></div></div><div class="ld-check"><input type="checkbox" id="bec2" data-k="bec2"><div><label for="bec2">Review the inbox rules, then remove the bad ones</label><p>Save the list as evidence first. Remove only rules the user did not create, by name.</p><div class="ld-cmd"><code>Get-InboxRule -Mailbox user@client.example | Format-List Name,Identity,ForwardTo,RedirectTo,DeleteMessage</code><button type="button" data-copy="Get-InboxRule -Mailbox user@client.example | Format-List Name,Identity,ForwardTo,RedirectTo,DeleteMessage">Copy</button></div></div></div><div class="ld-check"><input type="checkbox" id="bec3" data-k="bec3"><div><label for="bec3">Check app consents and sign-in logs</label><p>Remove apps you don’t recognise and note the attacker’s IP addresses for the watchlist.</p></div></div><div class="ld-check"><input type="checkbox" id="bec4" data-k="bec4"><div><label for="bec4">Re-register MFA and re-enable the account</label><p>Only after the steps above are done.</p></div></div><div class="ld-check"><input type="checkbox" id="bec5" data-k="bec5"><div><label for="bec5">Warn finance and affected partners</label><p>Treat any recent change of bank details as suspect until confirmed by phone.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="bec">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+      <details class="ld-pb ld-anchor" id="pb-signin" data-pb="signin" data-sev="high">
+        <summary><span class="ld-sev high">P2</span><span class="q">Suspicious sign-in<small>Impossible travel, repeated MFA prompts, or a risky sign-in alert</small></span><span class="done"><span class="pgn">0</span> of 5 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="signin0" data-k="signin0"><div><label for="signin0">Confirm with the user by phone</label><p>Use a known number, not one from the alert or an email. Ask if they signed in and approved the MFA prompt.</p></div></div><div class="ld-check"><input type="checkbox" id="signin1" data-k="signin1"><div><label for="signin1">If it was not them, block the account</label><p>Disable sign-in, then revoke sessions.</p><div class="ld-cmd"><code>Update-MgUser -UserId user@client.example -AccountEnabled:$false</code><button type="button" data-copy="Update-MgUser -UserId user@client.example -AccountEnabled:$false">Copy</button></div></div></div><div class="ld-check"><input type="checkbox" id="signin2" data-k="signin2"><div><label for="signin2">Check what the session touched</label><p>Review mailbox, SharePoint and admin activity from the suspicious IP address.</p></div></div><div class="ld-check"><input type="checkbox" id="signin3" data-k="signin3"><div><label for="signin3">Reset the password and re-register MFA</label><p>Then re-enable the account.</p></div></div><div class="ld-check"><input type="checkbox" id="signin4" data-k="signin4"><div><label for="signin4">Add the IP address to the watchlist</label><p>Set it to Monitor, or Block if it is clearly hostile.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="signin">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+      <details class="ld-pb ld-anchor" id="pb-phishing" data-pb="phishing" data-sev="medium">
+        <summary><span class="ld-sev medium">P3</span><span class="q">Phishing email reported<small>Link clicked, attachment opened or password entered</small></span><span class="done"><span class="pgn">0</span> of 5 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="phishing0" data-k="phishing0"><div><label for="phishing0">Get the original message</label><p>Ask for the .eml or .msg file. Forwarding strips the headers we need.</p></div></div><div class="ld-check"><input type="checkbox" id="phishing1" data-k="phishing1"><div><label for="phishing1">Find and remove it from every mailbox</label><p>Create the search, run it, check the results, then soft-delete all copies.</p><div class="ld-cmd"><code>New-ComplianceSearch -Name PhishPurge -ExchangeLocation All -ContentMatchQuery &#x27;from:bad@example.com&#x27;
+Start-ComplianceSearch -Identity PhishPurge
+New-ComplianceSearchAction -SearchName PhishPurge -Purge -PurgeType SoftDelete</code><button type="button" data-copy="New-ComplianceSearch -Name PhishPurge -ExchangeLocation All -ContentMatchQuery &#x27;from:bad@example.com&#x27;
+Start-ComplianceSearch -Identity PhishPurge
+New-ComplianceSearchAction -SearchName PhishPurge -Purge -PurgeType SoftDelete">Copy</button></div></div></div><div class="ld-check"><input type="checkbox" id="phishing2" data-k="phishing2"><div><label for="phishing2">Block the sender, link and attachment</label><p>Add them to the watchlist and to email security.</p></div></div><div class="ld-check"><input type="checkbox" id="phishing3" data-k="phishing3"><div><label for="phishing3">Check who clicked</label><p>Use click traces and sign-in logs. Treat anyone who clicked as possibly compromised.</p></div></div><div class="ld-check"><input type="checkbox" id="phishing4" data-k="phishing4"><div><label for="phishing4">Reset passwords that were entered</label><p>If anyone typed their password, follow the email account playbook.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="phishing">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+      <details class="ld-pb ld-anchor" id="pb-malware" data-pb="malware" data-sev="medium">
+        <summary><span class="ld-sev medium">P3</span><span class="q">Malware found on a device<small>EDR detection, blocked or not</small></span><span class="done"><span class="pgn">0</span> of 5 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="malware0" data-k="malware0"><div><label for="malware0">Check whether it was blocked or ran</label><p>If it ran, isolate the device straight away.</p></div></div><div class="ld-check"><input type="checkbox" id="malware1" data-k="malware1"><div><label for="malware1">Run a full scan and collect the file</label><p>Keep the sample and its hash for the watchlist.</p></div></div><div class="ld-check"><input type="checkbox" id="malware2" data-k="malware2"><div><label for="malware2">Find how it arrived</label><p>Email, download, USB or another device. Check the parent process.</p></div></div><div class="ld-check"><input type="checkbox" id="malware3" data-k="malware3"><div><label for="malware3">Look for the same hash elsewhere</label><p>Search all devices in the EDR console.</p></div></div><div class="ld-check"><input type="checkbox" id="malware4" data-k="malware4"><div><label for="malware4">Clean or reimage</label><p>Reimage if the malware had admin rights or persistence.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="malware">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+      <details class="ld-pb ld-anchor" id="pb-device" data-pb="device" data-sev="medium">
+        <summary><span class="ld-sev medium">P3</span><span class="q">Lost or stolen device<small>Laptop, phone or tablet with company data</small></span><span class="done"><span class="pgn">0</span> of 5 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="device0" data-k="device0"><div><label for="device0">Get the facts</label><p>When and where it was lost, whether it was encrypted and locked.</p></div></div><div class="ld-check"><input type="checkbox" id="device1" data-k="device1"><div><label for="device1">Wipe or lock it remotely</label><p>Use device management (Intune or similar).</p></div></div><div class="ld-check"><input type="checkbox" id="device2" data-k="device2"><div><label for="device2">Revoke the user’s sessions</label><p>So tokens cached on the device stop working.</p><div class="ld-cmd"><code>Revoke-MgUserSignInSession -UserId user@client.example</code><button type="button" data-copy="Revoke-MgUserSignInSession -UserId user@client.example">Copy</button></div></div></div><div class="ld-check"><input type="checkbox" id="device3" data-k="device3"><div><label for="device3">Decide if personal data is at risk</label><p>If the device was not encrypted, follow the data leak playbook.</p></div></div><div class="ld-check"><input type="checkbox" id="device4" data-k="device4"><div><label for="device4">Record the police report number</label><p>Ask the user to report theft and send the number.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="device">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+      <details class="ld-pb ld-anchor" id="pb-leak" data-pb="leak" data-sev="high">
+        <summary><span class="ld-sev high">P2</span><span class="q">Data leak<small>Data sent to the wrong person, exposed online, or copied out</small></span><span class="done"><span class="pgn">0</span> of 5 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="leak0" data-k="leak0"><div><label for="leak0">Stop the leak</label><p>Recall the email, remove the public link, block the destination.</p></div></div><div class="ld-check"><input type="checkbox" id="leak1" data-k="leak1"><div><label for="leak1">Work out what was exposed</label><p>Which data, how many people, whether it is personal or sensitive data.</p></div></div><div class="ld-check"><input type="checkbox" id="leak2" data-k="leak2"><div><label for="leak2">Keep the evidence</label><p>Save logs, messages and file versions before anything is deleted.</p></div></div><div class="ld-check"><input type="checkbox" id="leak3" data-k="leak3"><div><label for="leak3">Check the legal deadlines</label><p>Personal data: Commissioner within 72 hours. See the escalation page.</p></div></div><div class="ld-check"><input type="checkbox" id="leak4" data-k="leak4"><div><label for="leak4">Tell the client and the DPO</label><p>Use the client notice template on the escalation page.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="leak">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+      <details class="ld-pb ld-anchor" id="pb-exploit" data-pb="exploit" data-sev="critical">
+        <summary><span class="ld-sev critical">P1</span><span class="q">Public-facing system exploited<small>A critical vulnerability is being used against an internet-facing system</small></span><span class="done"><span class="pgn">0</span> of 5 done</span></summary>
+        <div class="ans">
+          <div class="ld-check"><input type="checkbox" id="exploit0" data-k="exploit0"><div><label for="exploit0">Confirm the version and the exposure</label><p>Check whether the affected version is running and reachable from the internet.</p></div></div><div class="ld-check"><input type="checkbox" id="exploit1" data-k="exploit1"><div><label for="exploit1">Patch, or take it offline</label><p>If no patch exists, apply the vendor workaround or block access at the firewall.</p></div></div><div class="ld-check"><input type="checkbox" id="exploit2" data-k="exploit2"><div><label for="exploit2">Hunt for signs of compromise</label><p>Web shells, new accounts, unusual outbound connections since the vulnerability was published.</p></div></div><div class="ld-check"><input type="checkbox" id="exploit3" data-k="exploit3"><div><label for="exploit3">Block attacker infrastructure</label><p>Add scanning and exploit source addresses to the watchlist.</p></div></div><div class="ld-check"><input type="checkbox" id="exploit4" data-k="exploit4"><div><label for="exploit4">Escalate</label><p>Treat any confirmed compromise as P1.</p></div></div>
+          <div class="ld-pbfoot"><button class="ld-btn sm" type="button" data-reset="exploit">Clear ticks</button><button class="ld-btn sm quiet" type="button" data-print>Print</button></div>
+        </div>
+      </details>
+    </div>
+    <div class="ld-empty" id="pbNone" hidden><b>No matching playbook</b>Try another word, or follow the <a href="/incident-response/#lifecycle">general response steps</a>.</div>
+  </div>
+</div>

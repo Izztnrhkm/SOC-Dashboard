@@ -1,49 +1,34 @@
-{% comment %} CyberGuard — About {% endcomment %}
-<div class="cg">
-  <div class="cg-wrap cg-page">
-    <nav class="cg-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>About</span></nav>
-    <header class="cg-head" style="max-width:760px">
-      <span class="cg-eyebrow">About</span>
-      <h1 class="cg-h1">A security team that never sleeps.</h1>
-      <p class="cg-lead" style="margin-top:6px">CyberGuard runs a 24/7 Security Operations Center and incident response team protecting cloud infrastructure, financial assets and employee identities.</p>
+{% comment %} Landasan Digital SOC Portal - About this portal {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
+      <div>
+        <h1>About this portal</h1>
+        <p>The SOC Portal is where the Landasan Digital security operations team tracks incidents, follows playbooks and reports on its work.</p>
+      </div>
     </header>
 
-    <section class="cg-grid cg-g4" aria-label="At a glance">
-      <div class="cg-stat"><b data-n="24">24/7</b><span>Coverage</span></div>
-      <div class="cg-stat"><b>3</b><span>Regional hubs</span></div>
-      <div class="cg-stat"><b>148k</b><span>Signals a day</span></div>
-      <div class="cg-stat"><b>15 min</b><span>P1 response target</span></div>
-    </section>
+    <div class="ld-prose">
+      <h2 style="margin-top:0">Who runs it</h2>
+      <p>Landasan Digital is a managed security services provider (MSSP) based in Shah Alam, Selangor. Our security operations centre (SOC) watches for threats around the clock and responds when something goes wrong.</p>
 
-    <section class="cg-section">
-      <div class="cg-grid cg-g3">
-        <div class="cg-card cg-reveal"><h3 class="cg-h3">Follow-the-sun coverage</h3><p class="cg-muted" style="margin-top:8px">Hubs in Reston, London and Singapore hand over every shift, so an alert is never waiting for morning.</p></div>
-        <div class="cg-card cg-reveal"><h3 class="cg-h3">Automated detection</h3><p class="cg-muted" style="margin-top:8px">Microsoft Sentinel, Defender XDR, CrowdStrike and Palo Alto feed one queue. Automation clears the noise so analysts focus on real threats.</p></div>
-        <div class="cg-card cg-reveal"><h3 class="cg-h3">Accredited process</h3><p class="cg-muted" style="margin-top:8px">Operations follow NIST SP 800-61, ISO/IEC 27001:2022 and SOC 2 Type II, with strict chain of custody for evidence.</p></div>
-      </div>
-    </section>
+      <h2>What you can do here</h2>
+      <ul>
+        <li><a href="/dashboard/">See and update open incidents</a> (SOC Analyst role).</li>
+        <li><a href="/incident-response/#report">Report an incident</a> and get a reference number.</li>
+        <li><a href="/handover/">Read and write shift handovers</a> (SOC Analyst role).</li>
+        <li><a href="/watchlist/">Keep the watchlist</a> of indicators to block or monitor (SOC Analyst role).</li>
+        <li><a href="/playbooks/">Follow a playbook</a> step by step.</li>
+        <li><a href="/escalation/">Check who to tell, and copy a message template</a>.</li>
+        <li><a href="/reports/">See trends and resolved incidents</a>.</li>
+      </ul>
 
-    <section class="cg-section">
-      <div class="cg-section-head"><div><h2 class="cg-h2">What we watch</h2><p class="cg-sub">Around 148,000 security signals a day across these sources.</p></div></div>
-      <div class="cg-grid cg-g3">
-        <div class="cg-card"><span class="cg-badge">Identity</span><p style="margin-top:12px"><b>Entra ID</b>, conditional access, privileged accounts</p></div>
-        <div class="cg-card"><span class="cg-badge">Endpoint</span><p style="margin-top:12px"><b>Defender XDR</b>, CrowdStrike Falcon</p></div>
-        <div class="cg-card"><span class="cg-badge">Network &amp; cloud</span><p style="margin-top:12px"><b>Palo Alto</b> NGFW and Prisma, Sentinel SIEM</p></div>
-      </div>
-    </section>
+      <h2>Where the data lives</h2>
+      <p>Incidents, handovers, the watchlist, messages and help articles are stored in Microsoft Dataverse in our own environment. Access is controlled by portal roles: you need the SOC Analyst role to see the incident list. Check your roles on <a href="/profile/">Profile and access</a>.</p>
 
-    <section class="cg-section">
-      <div class="cg-section-head"><div><h2 class="cg-h2">The regional hubs</h2><p class="cg-sub">Handover at the end of each local shift.</p></div></div>
-      <div class="cg-grid cg-g3">
-        <div class="cg-card"><b>Americas</b><p class="cg-muted">Reston, VA · 13:00–21:00 UTC</p></div>
-        <div class="cg-card"><b>EMEA</b><p class="cg-muted">London, UK · 05:00–13:00 UTC</p></div>
-        <div class="cg-card"><b>APAC</b><p class="cg-muted">Singapore · 21:00–05:00 UTC</p></div>
-      </div>
-    </section>
-
-    <section class="cg-cta">
-      <div><h2 class="cg-h2">Questions about how we work?</h2><p>The FAQ covers the most common ones.</p></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="cg-btn light" href="/faq/">Read the FAQ</a><a class="cg-btn outline-light" href="/contact-us/">Contact us</a></div>
-    </section>
+      <h2>Find us</h2>
+      <p>126 Block, Persiaran Sukan, 4, Persiaran Laman Seri Business Park, Seksyen 13, 40100 Shah Alam, Selangor.<br>
+      24/7 hotline <a href="tel:+60355243133">+60 3-5524 3133</a>, email <a href="mailto:enquiry@landasandigital.com">enquiry@landasandigital.com</a>.</p>
+    </div>
   </div>
 </div>

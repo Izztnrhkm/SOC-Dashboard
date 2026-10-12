@@ -1,44 +1,77 @@
-{% comment %} CyberGuard — FAQ. Static answers below are always shown; if the Dataverse table cg_article has rows, they are added at the end by the page script. {% endcomment %}
-<div class="cg">
-  <div class="cg-wrap cg-page" style="max-width:880px">
-    <nav class="cg-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>FAQ</span></nav>
-    <header class="cg-head">
-      <span class="cg-eyebrow">Help centre</span>
-      <h1 class="cg-h1">Frequently asked questions</h1>
-      <p class="cg-lead" style="margin-top:6px">Procedures and policies, in plain language. Type to filter or pick a topic.</p>
-    </header>
-    <div class="cg-bar">
-      <div class="cg-search-inline grow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <label class="cg-sr" for="faqFilter">Filter questions</label>
-        <input class="cg-in" id="faqFilter" type="search" placeholder="Search questions, e.g. ransomware" autocomplete="off">
+{% comment %} Landasan Digital SOC Portal - FAQ. These answers are always shown. Rows in the Dataverse table cg_article are added below them by the page script. {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page ld-narrow">
+    <header class="ld-pagehead" style="margin-bottom:28px">
+      <div>
+        <h1>Help</h1>
+        <p>Guides for when something goes wrong, and answers to common questions.</p>
       </div>
-      <button class="cg-btn ghost" type="button" id="faqToggle">Expand all</button>
+    </header>
+
+    <section aria-labelledby="guidesH">
+      <h2 class="ld-sr" id="guidesH">Guides</h2>
+      <ul class="ld-links ld-guides">
+        <li><a href="/incident-response/">Incident response<small>Severity levels, response steps and the report form</small></a></li>
+        <li><a href="/playbooks/">Playbooks<small>Step-by-step checklists for each type of incident</small></a></li>
+        <li><a href="/escalation/">Escalation<small>Who to tell, legal deadlines, message templates</small></a></li>
+        <li><a href="/contact-us/">Contact the SOC<small>Hotline, email and message form</small></a></li>
+      </ul>
+    </section>
+
+    <h2 class="ld-h2" style="margin:56px 0 14px">Questions and answers</h2>
+    <div class="ld-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <label class="ld-sr" for="faqQ">Search questions</label>
+      <input class="ld-input" id="faqQ" type="search" placeholder="Search, for example: ransomware" autocomplete="off">
     </div>
-    <div id="faqChips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" role="group" aria-label="Topic"><button type="button" class="cg-chip on" data-cat="All">All</button><button type="button" class="cg-chip" data-cat="Access">Access</button><button type="button" class="cg-chip" data-cat="Email">Email</button><button type="button" class="cg-chip" data-cat="Endpoint">Endpoint</button><button type="button" class="cg-chip" data-cat="Incidents">Incidents</button><button type="button" class="cg-chip" data-cat="Threat intelligence">Threat intelligence</button></div>
-    <p id="faqCount" class="cg-muted" style="font-size:14px;margin-bottom:8px" aria-live="polite"></p>
-    <div class="cg-acc" id="faqList">
-      <details id="q1" data-cat="Incidents"><summary>What qualifies as a Severity 1 (P1 - Critical) incident?</summary><div class="body">A P1 Critical incident is defined as an active, uncontained breach that directly impacts core business operations or enterprise confidentiality. Examples include active ransomware encryption spreading across the network, unauthorized compromise of a Primary Domain Controller (KDC), or mass data exfiltration of customer PII/PCI databases. P1 incidents invoke our 15-minute response SLA and immediate CISO notification.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
-      <details id="q2" data-cat="Endpoint"><summary>Why was my workstation placed under "Network Isolation" by EDR?</summary><div class="body">Network Isolation is an automated or analyst-triggered containment mechanism executed by Microsoft Defender XDR or CrowdStrike Falcon. When an endpoint displays active malicious behavior (such as Cobalt Strike beaconing or Mimikatz credential extraction), the sensor severs all TCP/IP connectivity except for encrypted telemetry to the SOC console. To request investigation and network release, contact the 24/7 CSIRT hotline.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
-      <details id="q3" data-cat="Email"><summary>How do I report a suspected Phishing or Business Email Compromise (BEC)?</summary><div class="body">Do not forward the email directly, as this may strip vital RFC822 internet headers. Use the "Report Message" button in Outlook ribbon or export the original email as an `.eml` or `.msg` attachment and submit it via our <a href="/contact-us/" >Secure Dispatch Form</a>. If you clicked a link or entered your credentials, immediately alert the on-call responder.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
-      <details id="q4" data-cat="Incidents"><summary>What should I do immediately if my device displays a ransomware message?</summary><div class="body"><strong>DO NOT power off or reboot the system</strong>—powering down destroys volatile memory artifacts (RAM) required for decryptor keys and forensic attribution. Immediately disconnect the physical ethernet cable or disable Wi-Fi, keep the computer powered on, and phone the CSIRT Emergency Hotline (+1 800-555-2923) immediately.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
-      <details id="q5" data-cat="Threat intelligence"><summary>How are forensic indicators (IOCs) validated before firewall blocklist push?</summary><div class="body">All external IP addresses, domains, and SHA-256 file hashes undergo automated enrichment against VirusTotal, AlienVault OTX, and Microsoft Defender Threat Intelligence (MDTI). Indicators scoring an adversary confidence score &gt; 85 are automatically pushed to perimeter Palo Alto firewalls and Cloudflare Edge WAF rules.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
-      <details id="q6" data-cat="Access"><summary>How do internal security analysts request elevated SOC Dashboard access?</summary><div class="body">Access to the live SOC dashboard requires the "SOC Analyst" or "SecOps Administrator" web role in Power Pages / Dataverse, along with hardware-enforced FIDO2 (YubiKey) MFA. Submit an access elevation ticket approved by your department security lead.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
-      <details id="q7" data-cat="Access"><summary>How do I get a password reset or unlock my account?</summary><div class="body">Use the self-service password portal first. If MFA is locked, call the service desk and be ready to verify your identity with your manager. The SOC will never ask for your password.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
-      <details id="q8" data-cat="Access"><summary>Who can see the incidents I report?</summary><div class="body">Reports are visible to the SOC team and to you. Details such as host names and indicators are not shown to other employees.
-        <div class="vote">Was this helpful? <button type="button" data-v="up" aria-label="Yes">Yes</button><button type="button" data-v="down" aria-label="No">No</button><span class="thanks" hidden>Thanks for the feedback.</span></div></div></details>
+    <div class="ld-topics" id="faqTopics" role="group" aria-label="Topic">
+      <button type="button" data-cat="All" aria-pressed="true">All</button>
+      <button type="button" data-cat="Incidents" aria-pressed="false">Incidents</button>
+      <button type="button" data-cat="Email" aria-pressed="false">Email</button>
+      <button type="button" data-cat="Devices" aria-pressed="false">Devices</button>
+      <button type="button" data-cat="Access" aria-pressed="false">Access</button>
     </div>
-    <div id="faqNone" class="cg-empty" hidden><b>No questions match</b>Try another word, or <a href="/contact-us/">ask us directly</a>.</div>
-    <div class="cg-cta" style="margin-top:56px">
-      <div><h2 class="cg-h2">Still need help?</h2><p>The security team replies by email, or call the hotline for anything urgent.</p></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="cg-btn light" href="/contact-us/">Contact us</a><a class="cg-btn outline-light" href="tel:+18005552923">Call hotline</a></div>
+    <p class="ld-sr" id="faqCount" aria-live="polite"></p>
+
+    <div class="ld-acc" id="faqList">
+      <details id="p1" data-cat="Incidents"><summary><span class="q">What counts as a P1 critical incident?</span></summary><div class="ans">
+        <p>An active breach that is not contained and affects core systems or confidential data. For example: ransomware encrypting files across the network, a domain controller taken over, or customer data being copied out.</p>
+        <p>P1 incidents get a response within 15 minutes and the CISO is told straight away. See <a href="/incident-response/#severity">all severity levels</a>.</p>
+      </div></details>
+      <details id="ransom" data-cat="Incidents"><summary><span class="q">A device shows a ransom message. What do I do first?</span></summary><div class="ans">
+        <p>Do not switch it off or restart it: that destroys evidence we need. Unplug the network cable or turn off Wi-Fi, leave the device on, and call the hotline on <a href="tel:+60355243133">+60 3-5524 3133</a>.</p>
+      </div></details>
+      <details id="report" data-cat="Incidents"><summary><span class="q">How do I report an incident?</span></summary><div class="ans">
+        <p>Use the <a href="/incident-response/#report">report form</a> or the red Report incident button at the top of every page. It takes about a minute and you get a reference number. For P1 or P2, call the hotline first.</p>
+      </div></details>
+      <details id="phish" data-cat="Email"><summary><span class="q">How do I report a phishing email?</span></summary><div class="ans">
+        <p>Use the Report button in Outlook. If you can’t, save the email as an .eml or .msg file and send it through the <a href="/contact-us/?topic=Suspicious%20email%20or%20phishing">contact form</a>. Don’t forward it: forwarding removes the headers we need.</p>
+        <p>If you clicked a link or typed your password, call the hotline now.</p>
+      </div></details>
+      <details id="isolated" data-cat="Devices"><summary><span class="q">Why was my device cut off from the network?</span></summary><div class="ans">
+        <p>Our endpoint protection (EDR) isolates a device when it sees signs of an attack. The device can still talk to the security tools, but nothing else. An analyst will look at it and release it when it is safe. To ask about it, call the hotline or use the <a href="/contact-us/?topic=Device%20quarantined%20by%20EDR">contact form</a>.</p>
+      </div></details>
+      <details id="iocs" data-cat="Devices"><summary><span class="q">How are indicators checked before they are blocked?</span></summary><div class="ans">
+        <p>An analyst checks each IP address, domain and file hash against threat intelligence before adding it to the firewall and EDR block lists, so we don’t block something legitimate by mistake.</p>
+      </div></details>
+      <details id="access" data-cat="Access"><summary><span class="q">How do I get access to the incident dashboard?</span></summary><div class="ans">
+        <p>Your portal account needs the SOC Analyst role. Ask a portal admin, or send a request with the <a href="/contact-us/?topic=Dashboard%20access">contact form</a>. You can check your roles on <a href="/profile/">Profile and access</a>.</p>
+      </div></details>
+      <details id="password" data-cat="Access"><summary><span class="q">How do I reset my password or unlock my account?</span></summary><div class="ans">
+        <p>Use self-service password reset first. If your MFA is locked, call the service desk and be ready to confirm who you are. The SOC will never ask for your password.</p>
+      </div></details>
+      <details id="handover" data-cat="Incidents"><summary><span class="q">What goes in a shift handover?</span></summary><div class="ans">
+        <p>Three things: what happened on your shift, what is still open, and what the next shift should keep an eye on. On the <a href="/handover/">Handover page</a>, the Add open incidents link copies the current open incidents into the form for you.</p>
+      </div></details>
+      <details id="watchlist" data-cat="Devices"><summary><span class="q">When should something go on the watchlist?</span></summary><div class="ans">
+        <p>Add an indicator when you have confirmed it is malicious (Block) or suspicious enough to alert on (Monitor). Always give a reason, and set an expiry date unless the indicator should stay blocked for good, so the list stays short and accurate. See the <a href="/watchlist/">Watchlist</a>.</p>
+      </div></details>
+      <details id="who" data-cat="Access"><summary><span class="q">Who can see the incidents I report?</span></summary><div class="ans">
+        <p>Everyone with the SOC Analyst role. Other staff can report incidents but cannot see the incident list.</p>
+      </div></details>
     </div>
+    <div class="ld-empty" id="faqNone" hidden><b>No matching questions</b>Try another word, or <a href="/contact-us/">ask the team</a>.</div>
+
+    <p class="ld-sec" style="color:var(--ink-2)">Didn’t find your answer? <a href="/contact-us/">Send the team a message</a> or call <a href="tel:+60355243133">+60 3-5524 3133</a>.</p>
   </div>
 </div>

@@ -1,0 +1,59 @@
+{% comment %} Landasan Digital SOC Portal - Watchlist of indicators (IOCs). Rows live in the Dataverse table cg_indicator (see the page script and setup-portal-v4.ps1). {% endcomment %}
+<div class="ld">
+  <div class="ld-wrap ld-page">
+    <header class="ld-pagehead">
+      <div>
+        <h1>Watchlist</h1>
+        <p>Indicators we block or monitor. Add them here first, then push them to the firewall, EDR and email security.</p>
+        <p class="ld-source" id="wSource">Loading…</p>
+      </div>
+      <div class="ld-actions">
+        <button class="ld-btn quiet" id="wCopy" type="button">Copy block list</button>
+        <button class="ld-btn" id="wCsv" type="button">Export CSV</button>
+        <button class="ld-btn primary" id="wNew" type="button">Add indicator</button>
+      </div>
+    </header>
+
+    <div class="ld-note" id="wConn" hidden role="status"><div id="wConnText"></div></div>
+
+    <div class="ld-tabs four" id="wTabs" role="group" aria-label="Filter by action"></div>
+
+    <div class="ld-toolbar">
+      <div class="ld-search grow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="ld-sr" for="wQ">Search the watchlist</label>
+        <input class="ld-input" id="wQ" type="search" placeholder="Search value, reason, incident or person" autocomplete="off">
+      </div>
+      <label class="ld-sr" for="wType">Type</label>
+      <select class="ld-select" id="wType"><option value="all">All types</option><option>IP address</option><option>Domain</option><option>URL</option><option>File hash</option><option>Email address</option></select>
+    </div>
+
+    <div class="ld-tablewrap">
+      <table class="ld-table stack ld-watch">
+        <caption class="ld-sr">Watchlist indicators</caption>
+        <thead><tr><th scope="col">Indicator</th><th scope="col">Type</th><th scope="col">Action</th><th scope="col">Added</th><th scope="col">Expires</th><th scope="col"><span class="ld-sr">Remove</span></th></tr></thead>
+        <tbody id="wRows"><tr><td colspan="6" class="ld-muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="ld-pager"><span id="wInfo" aria-live="polite"></span><span></span></div>
+  </div>
+
+  <dialog class="ld-dialog" id="wDlg" aria-labelledby="wDlgH">
+    <form id="wForm" novalidate>
+      <h2 id="wDlgH">Add indicator</h2>
+      <div class="ld-field" id="wValF"><label for="wVal">Indicators <span class="hint">(one per line)</span></label><textarea class="ld-text" id="wVal" style="min-height:96px;font-family:var(--mono);font-size:14px" placeholder="203.0.113.10&#10;bad-domain.example&#10;e3b0c44298fc1c149afbf4c8996fb924..." spellcheck="false" autocomplete="off"></textarea><div class="ld-small ld-muted" id="wDetect" style="margin-top:6px"></div><div class="err" id="wValErr">Add at least one indicator.</div></div>
+      <div class="ld-field"><span class="lbl" id="wActL">Action</span>
+        <div class="ld-seg" role="radiogroup" aria-labelledby="wActL">
+          <label><input type="radio" name="wAct" value="Block" checked><span>Block</span></label>
+          <label><input type="radio" name="wAct" value="Monitor"><span>Monitor</span></label>
+        </div>
+      </div>
+      <div class="ld-field" id="wWhyF"><label for="wWhy">Reason</label><input class="ld-input" id="wWhy" maxlength="500" placeholder="For example: command-and-control server for INC-2026-8941" autocomplete="off"><div class="err">Say why, so others know when it can be removed.</div></div>
+      <div class="ld-grid2">
+        <div class="ld-field"><label for="wExp">Expires</label><select class="ld-select" id="wExp"><option value="7">In 7 days</option><option value="30">In 30 days</option><option value="90" selected>In 90 days</option><option value="0">Never</option></select></div>
+        <div class="ld-field"><label for="wInc">Incident <span class="hint">(optional)</span></label><input class="ld-input" id="wInc" maxlength="50" placeholder="INC-2026-8941" autocomplete="off"></div>
+      </div>
+      <div class="ld-actions"><button class="ld-btn quiet" type="button" id="wCancel">Cancel</button><button class="ld-btn primary" type="submit" id="wGo">Add to watchlist</button></div>
+    </form>
+  </dialog>
+</div>

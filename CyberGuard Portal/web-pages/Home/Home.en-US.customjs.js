@@ -1,27 +1,47 @@
-/* Home — live posture + latest incidents (falls back to sample data automatically) */
+/* Home: one plain sentence about what is open right now, and the most urgent open incidents. */
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   if (!$('feed') || !window.CG) return;
-  var RANK = { critical: 0, high: 1, medium: 2, low: 3 };
+  var h = new Date().getHours(), name = CG.firstName();
+  $('hello').textContent = (h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening') + (name ? ', ' + name : '') + '.';
+
+  /* last shift handover */
+  CG.handovers.list().then(function (r) {
+    var el = $('lastHo'), h = r.items.slice().sort(function (a, b) { return b.created - a.created; })[0];
+    if (!r.live && (r.restricted || r.failed)) { el.innerHTML = '<p class="ld-muted">' + (r.restricted ? 'Handovers appear here once your account has the SOC Analyst role.' : 'Handovers couldn’t be loaded.') + '</p>'; return; }
+    if (!h) { el.innerHTML = '<p class="ld-muted">No handover yet. <a href="/handover/#write">Write the first one</a>.</p>'; return; }
+    var txt = String(h.summary || ''); if (txt.length > 180) txt = txt.slice(0, 177).replace(/\s+\S*$/, '') + '…';
+    el.innerHTML = '<p class="ld-small ld-muted">' + CG.esc(h.title || 'Shift') + ', ' + CG.esc(h.author || 'unknown') + ', ' + CG.ago(h.created) + '</p><p style="margin-top:6px">' + CG.esc(txt) + '</p><p style="margin-top:8px"><a class="ld-small" href="/handover/">Read the full handover</a></p>';
+  });
+
   CG.incidents.list().then(function (res) {
-    if (res.restricted) { $('postLvl').textContent = 'Restricted'; $('pSrc').textContent = res.status === 401 ? 'Sign in to see live data' : 'Needs the SOC Analyst role'; $('feedSub').textContent = 'You do not have access to incident data'; $('feed').innerHTML = '<li><div class="cg-empty" style="width:100%;padding:28px"><b>No access</b>' + CG.esc(res.reason) + '</div></li>'; return; }
-    var s = CG.stats(res.items), week = Date.now() - 7 * 86400000;
-    var resolvedWeek = res.items.filter(function (i) { return i.status === 'resolved' && i.modified > week; }).length;
-    var lvl, pos, cls;
-    if (s.bySev.critical >= 3) { lvl = 'Critical'; pos = 90; cls = 'bad'; }
-    else if (s.bySev.critical >= 1) { lvl = 'Elevated'; pos = 66; cls = 'bad'; }
-    else if (s.bySev.high >= 3) { lvl = 'Guarded'; pos = 38; cls = 'warn'; }
-    else { lvl = 'Normal'; pos = 12; cls = ''; }
-    $('postLvl').textContent = lvl; $('postDot').className = 'cg-pulse ' + cls; $('postPin').style.left = pos + '%';
-    CG.count($('pOpen'), s.open); CG.count($('pCrit'), s.bySev.critical); CG.count($('pRes'), resolvedWeek);
-    $('pMttr').textContent = s.mttr ? s.mttr + ' min' : '—';
-    $('pSrc').textContent = res.live ? 'Live (Dataverse)' : 'Sample data';
+    var now = $('now'), sub = $('nowSub'), feed = $('feed');
+    if (res.restricted || res.failed) {
+      now.textContent = res.failed ? 'Incidents couldn’t be loaded.' : res.status === 401 ? 'Sign in to see open incidents.' : 'You can’t see incidents yet.';
+      sub.innerHTML = CG.esc(res.reason) + (res.status === 403 ? ' <a href="/contact-us/?topic=Dashboard%20access">Ask for access</a>' : '');
+      feed.innerHTML = '<li class="ld-empty">' + (res.failed ? 'Try again in a minute. If something is urgent, call the hotline.' : 'Incidents appear here once your account has access.') + '</li>';
+      $('allLink').hidden = true;
+      return;
+    }
+    var s = CG.stats(res.items), c = s.bySev.critical;
+    if (c > 0) now.innerHTML = '<span class="n">' + CG.plural(c, 'critical incident') + '</span> ' + (c === 1 ? 'is' : 'are') + ' open.';
+    else if (s.open > 0) now.textContent = CG.plural(s.open, 'incident') + ' open, none critical.';
+    else now.textContent = 'No open incidents.';
+    var bits = [];
+    if (c > 0) bits.push(CG.plural(s.open, 'incident') + ' open in total');
+    if (s.unassigned > 0) bits.push(s.unassigned + ' without an owner');
+    if (s.mttr) bits.push('average time to resolve ' + CG.duration(s.mttr));
+    var txt = bits.length ? bits.join(', ') + '.' : '';
+    sub.innerHTML = (txt ? txt.charAt(0).toUpperCase() + txt.slice(1) : '') + (res.live ? '' : '<br><span class="ld-muted ld-small">Sample data. ' + CG.esc(res.reason) + '</span>');
+
     var open = res.items.filter(function (i) { return i.status !== 'resolved'; })
-      .sort(function (a, b) { return RANK[a.sev] - RANK[b.sev] || b.created - a.created; }).slice(0, 6);
-    $('feedSub').textContent = open.length ? s.open + ' open in total, most severe first' : 'Nothing open right now';
-    $('feed').innerHTML = open.length ? open.map(function (i) {
-      return '<li><a href="/dashboard/?open=' + encodeURIComponent(i.id) + '" style="display:flex;gap:14px;align-items:center;width:100%;color:inherit"><span class="cg-badge ' + i.sev + '" style="min-width:86px;justify-content:center">' + CG.esc(i.sev.charAt(0).toUpperCase() + i.sev.slice(1)) + '</span><span class="txt"><b>' + CG.esc(i.title) + '</b><small>' + CG.esc(i.ref) + (i.host ? ' · ' + CG.esc(i.host) : '') + '</small></span><span class="when">' + CG.ago(i.created) + '</span></a></li>';
-    }).join('') : '<li><div class="cg-empty" style="width:100%;padding:28px"><b>All clear</b>No open incidents.</div></li>';
+      .sort(function (a, b) { return CG.RANK[a.sev] - CG.RANK[b.sev] || b.created - a.created; }).slice(0, 6);
+    feed.innerHTML = open.length ? open.map(function (i) {
+      return '<li><a class="ld-row ld-bar ' + CG.esc(i.sev) + '" href="/dashboard/?open=' + encodeURIComponent(i.id) + '">' + CG.sevTag(i.sev) +
+        '<span><span class="t">' + CG.esc(i.title) + '</span><span class="s">' + CG.esc([i.ref, i.host, CG.isUnassigned(i) ? 'no owner' : i.owner].filter(Boolean).join(', ')) + '</span></span>' +
+        '<span class="age">' + CG.ago(i.created) + '</span></a></li>';
+    }).join('') : '<li class="ld-empty"><b>All clear</b>Nothing is open. New reports will show up here.</li>';
+    $('allLink').textContent = s.open > open.length ? 'All ' + s.open + ' open incidents' : 'Open the dashboard';
   });
 })();
